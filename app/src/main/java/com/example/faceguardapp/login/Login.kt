@@ -12,25 +12,28 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.faceguardapp.login.body.Body
 import com.example.faceguardapp.login.header.Header
 
 @Composable
-fun LoginScreen(modifier: Modifier) {
+fun LoginScreen(modifier: Modifier, navigationController: NavController) {
     Column(
         modifier = modifier
             .fillMaxSize()
             .background(Color(0xff02416d))
             .padding(top = 16.dp)
     ) {
-        Header(modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp)
-            .weight(3f))
+        Header(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+                .weight(3f)
+        )
         Body(
             modifier = Modifier
-                .weight(7f)
-
+                .weight(7f),
+            navigationController
         )
     }
 }

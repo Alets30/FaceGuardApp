@@ -19,6 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.faceguardapp.home.HomeScreen
 import com.example.faceguardapp.login.LoginScreen
 import com.example.faceguardapp.routes.MainRoutes
 import com.example.faceguardapp.stores.StoreDarkMode
@@ -44,10 +45,10 @@ class MainActivity : ComponentActivity() {
                     )
                     {
                         composable(MainRoutes.Login.route) {
-                            LoginScreen(modifier = Modifier)
+                            LoginScreen(modifier = Modifier, navigationController)
                         }
                         composable(MainRoutes.Home.route) {
-                            //Screen2N(navigationController)
+                            HomeScreen()
                         }
 //                        composable(
 //                            Routes.Screen4.route,
