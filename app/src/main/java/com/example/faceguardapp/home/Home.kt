@@ -71,13 +71,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import com.example.faceguardapp.routes.MainRoutes
 import com.example.faceguardapp.stores.StoreDarkMode
 import kotlinx.coroutines.launch
 
-@Preview
+
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun HomeScreen() {
+fun HomeScreen(navigationController: NavController) {
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
@@ -86,7 +88,7 @@ fun HomeScreen() {
         //gesturesEnabled = false,
         drawerContent = {
             ModalDrawerSheet {
-                MyModalDrawer() {
+                MyModalDrawer(navigationController) {
                     scope.launch {
                         drawerState.close()
                     }
@@ -143,7 +145,7 @@ fun HomeScreen() {
 }
 
 @Composable
-fun MyModalDrawer(onCloseDrawer: () -> Unit) {
+fun MyModalDrawer(navigationController: NavController, onCloseDrawer: () -> Unit ) {
     val context = LocalContext.current
     val darkModeStore = StoreDarkMode(context)
     val darkMode = darkModeStore.getDarkMode.collectAsState(initial = false)
@@ -309,7 +311,8 @@ fun MyModalDrawer(onCloseDrawer: () -> Unit) {
             color = Color.White,
             modifier = Modifier.padding(8.dp),
         )
-        TextButton(onClick = { onCloseDrawer() }) {
+        TextButton(onClick = { navigationController.navigate(MainRoutes.Notificaciones.route)
+            onCloseDrawer() }) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
             ) {

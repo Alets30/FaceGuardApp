@@ -1,6 +1,7 @@
 package com.example.faceguardapp
 
 import AuthApiService
+import com.example.faceguardapp.notificaciones.data.NotificacionApiService
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -29,6 +30,15 @@ object RetrofitClient {
             .client(okHttpClient)
             .build()
             .create(AuthApiService::class.java)
+    }
+
+    val apinotificacion: NotificacionApiService by lazy {
+        Retrofit.Builder()
+            .baseUrl(Constantes.BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(okHttpClient)
+            .build()
+            .create(NotificacionApiService::class.java)
     }
 
     fun setToken(newToken: String) {

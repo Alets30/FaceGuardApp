@@ -58,6 +58,9 @@ dependencies {
     implementation("com.google.code.gson:gson:2.10.1")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
 
+    //Live data
+    implementation("androidx.compose.runtime:runtime-livedata:1.7.5")
+
     //Navegación
     implementation("androidx.navigation:navigation-compose:2.8.4")
 
@@ -66,6 +69,9 @@ dependencies {
 
     //Iconos
     implementation("androidx.compose.material:material-icons-extended:1.7.3")
+
+    implementation ("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.0")
+
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
