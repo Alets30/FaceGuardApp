@@ -1,6 +1,7 @@
 package com.example.faceguardapp.home
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -31,6 +32,8 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Repeat
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
@@ -55,8 +58,10 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -72,6 +77,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.faceguardapp.notificaciones.viewmodels.NotificacionViewModel
 import com.example.faceguardapp.routes.MainRoutes
 import com.example.faceguardapp.stores.StoreDarkMode
 import kotlinx.coroutines.launch
@@ -109,7 +115,7 @@ fun HomeScreen(navigationController: NavController) {
                     scope.launch {
                         drawerState.open()
                     }
-                })
+                },navigationController)
             },
             snackbarHost = {
                 SnackbarHost(hostState = snackbarHostState) { data ->
@@ -448,7 +454,16 @@ fun MyBottomNavigationTarea() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyTopAppBarTarea(onClickIcon: (String) -> Unit, onClickDrawer: () -> Unit) {
+fun MyTopAppBarTarea(onClickIcon: (String) -> Unit, onClickDrawer: () -> Unit, navigationController: NavController) {
+    val viewModel: NotificacionViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+    val notificaciones by viewModel.notificaciones.observeAsState(emptyList())
+    val notificacionesPendientes = notificaciones.count { !it.leida }
+
+    LaunchedEffect(Unit) {
+        viewModel.cargarNotificaciones()
+    }
+
+
     TopAppBar(
         title = {
             Text(
@@ -469,19 +484,32 @@ fun MyTopAppBarTarea(onClickIcon: (String) -> Unit, onClickDrawer: () -> Unit) {
             }
         },
         actions = {
-            IconButton(onClick = { onClickIcon("Buscar") }) {
-                Icon(
-                    imageVector = Icons.Default.Search,
-                    contentDescription = "Search"
-                )
-            }
-            IconButton(onClick = {
-                onClickIcon("Cerrar")
-            }) {
-                Icon(
-                    imageVector = Icons.Default.Close,
-                    contentDescription = "Close"
-                )
+            BadgedBox(
+                badge = {
+                    if (notificacionesPendientes > 0) {
+                        Badge(
+                            content = {
+                                Text(
+                                    text = notificacionesPendientes.toString(),
+                                    color = Color.White,
+                                    fontSize = 15.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            },
+                            containerColor = Color.Red,
+                            modifier = Modifier
+                                .padding(0.dp)
+                        )
+                    }
+                }
+            ) {
+                IconButton(onClick = { navigationController.navigate(MainRoutes.Notificaciones.route) }) {
+                    Icon(
+                        imageVector = Icons.Default.Notifications,
+                        contentDescription = "Notificacion",
+                        tint = Color(0xffaedd2b),
+                    )
+                }
             }
         },
         colors = TopAppBarDefaults.topAppBarColors(

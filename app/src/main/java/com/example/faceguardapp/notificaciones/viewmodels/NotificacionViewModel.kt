@@ -17,6 +17,7 @@ class NotificacionViewModel : ViewModel() {
     private val _mensajeEstado = MutableLiveData<String>()
     val mensajeEstado: LiveData<String> get() = _mensajeEstado
 
+
     fun cargarNotificaciones() {
         viewModelScope.launch {
             try {

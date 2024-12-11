@@ -1,22 +1,32 @@
 package com.example.faceguardapp.notificaciones.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -38,7 +48,7 @@ import com.example.faceguardapp.notificaciones.viewmodels.NotificacionViewModel
         }
 
         LazyColumn (modifier = Modifier
-            .padding(16.dp)){
+            .padding(top = 40.dp, start = 10.dp, end = 10.dp)){
             items(notificaciones) { notificacion ->
                 NotificacionItem(
                     notificacion = notificacion,
@@ -49,41 +59,43 @@ import com.example.faceguardapp.notificaciones.viewmodels.NotificacionViewModel
     }
 
 @Composable
-fun NotificacionItem(notificacion: Notificacion, onMarcarComoLeida: () -> Unit) {
-    // Usamos un Card para darle un estilo más pulido
-    Card (
+fun NotificacionItem(
+    notificacion: Notificacion,
+    onMarcarComoLeida: () -> Unit
+) {
+    // Usamos un Row para organizar el avatar y el contenido de la notificación
+    Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp)
-            .background(Color.White),
-        shape = RoundedCornerShape(12.dp), // Bordes redondeados
+            .padding(8.dp)
+            .background(Color(0xffefefef), RoundedCornerShape(8.dp))
+            .padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp), // Espaciado interno de la card
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            // Mensaje de la notificación
+        Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = notificacion.mensaje,
-                modifier = Modifier
-                    .weight(1f), // Asegura que el texto ocupe todo el espacio disponible
+                style = MaterialTheme.typography.bodyMedium,
                 color = Color.Black
             )
 
-            // Si la notificación no ha sido leída, mostramos el botón
-            if (!notificacion.leida) {
-                Button(
-                    onClick = onMarcarComoLeida,
-                    modifier = Modifier
-                        .padding(start = 8.dp), // Separación entre el texto y el botón
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.Blue)
-                ) {
-                    Text("Marcar como leída", color = Color.White)
-                }
+            Text(
+                text = notificacion.fecha_creacion.toString(),
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color.Gray
+            )
+        }
+
+        // Botón "Marcar como leída"
+        if (!notificacion.leida) {
+            TextButton(onClick = onMarcarComoLeida) {
+                Text(
+                    text = "Leer",
+                    color = Color(0xff0a5483)
+                )
             }
         }
     }
 }
+
 
