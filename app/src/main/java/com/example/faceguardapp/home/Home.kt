@@ -13,12 +13,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.union
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AddLocation
+import androidx.compose.material.icons.filled.Brightness4
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DoorBack
 import androidx.compose.material.icons.filled.Favorite
@@ -27,6 +29,7 @@ import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.LockPerson
 import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Nightlight
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Repeat
@@ -52,6 +55,7 @@ import androidx.compose.material3.SnackbarData
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
@@ -115,24 +119,8 @@ fun HomeScreen(navigationController: NavController) {
                     scope.launch {
                         drawerState.open()
                     }
-                },navigationController)
+                }, navigationController)
             },
-            snackbarHost = {
-                SnackbarHost(hostState = snackbarHostState) { data ->
-                    MySnackbar(data)
-                }
-            },
-            bottomBar = {
-                MyBottomNavigationTarea()
-            },
-            floatingActionButton = {
-                FABTarea() {
-                    scope.launch {
-                        snackbarHostState.showSnackbar("Agregar Info")
-                    }
-                }
-            },
-            floatingActionButtonPosition = FabPosition.Center,
             modifier = Modifier.background(Color(0xfff8f8ec)),
             contentWindowInsets = WindowInsets.systemBars.union(WindowInsets.ime)
         ) { contentPadding ->
@@ -151,7 +139,7 @@ fun HomeScreen(navigationController: NavController) {
 }
 
 @Composable
-fun MyModalDrawer(navigationController: NavController, onCloseDrawer: () -> Unit ) {
+fun MyModalDrawer(navigationController: NavController, onCloseDrawer: () -> Unit) {
     val context = LocalContext.current
     val darkModeStore = StoreDarkMode(context)
     val darkMode = darkModeStore.getDarkMode.collectAsState(initial = false)
@@ -317,8 +305,10 @@ fun MyModalDrawer(navigationController: NavController, onCloseDrawer: () -> Unit
             color = Color.White,
             modifier = Modifier.padding(8.dp),
         )
-        TextButton(onClick = { navigationController.navigate(MainRoutes.Notificaciones.route)
-            onCloseDrawer() }) {
+        TextButton(onClick = {
+            navigationController.navigate(MainRoutes.Notificaciones.route)
+            onCloseDrawer()
+        }) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
@@ -338,26 +328,26 @@ fun MyModalDrawer(navigationController: NavController, onCloseDrawer: () -> Unit
                 )
             }
         }
-        TextButton(onClick = { onCloseDrawer() }) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Settings,
-                    contentDescription = "Configuraciones",
-                    tint = Color.White
-                )
-                Text(
-                    text = "Configuraciones",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp),
-                    color = Color.White,
-                    fontSize = 22.sp,
-                    fontWeight = FontWeight.Normal
-                )
-            }
-        }
+//        TextButton(onClick = { onCloseDrawer() }) {
+//            Row(
+//                verticalAlignment = Alignment.CenterVertically,
+//            ) {
+//                Icon(
+//                    imageVector = Icons.Default.Settings,
+//                    contentDescription = "Configuraciones",
+//                    tint = Color.White
+//                )
+//                Text(
+//                    text = "Configuraciones",
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .padding(8.dp),
+//                    color = Color.White,
+//                    fontSize = 22.sp,
+//                    fontWeight = FontWeight.Normal
+//                )
+//            }
+//        }
         TextButton(onClick = { onCloseDrawer() }) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -380,13 +370,46 @@ fun MyModalDrawer(navigationController: NavController, onCloseDrawer: () -> Unit
         }
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
         ) {
+            Text(
+                text = "Modo Oscuro",
+                modifier = Modifier
+                    .padding(8.dp),
+                color = Color.White,
+                fontSize = 22.sp,
+                fontWeight = FontWeight.Normal
+            )
             Switch(
-                checked = darkMode.value?:false, onCheckedChange = { isChecked ->
+                checked = darkMode.value ?: false,
+                onCheckedChange = { isChecked ->
                     scope.launch {
                         darkModeStore.saveDarkMode(isChecked)
                     }
                 },
+                thumbContent = if (darkMode.value == true) {
+                    {
+                        Icon(
+                            imageVector = Icons.Filled.Nightlight,
+                            contentDescription = null,
+                            modifier = Modifier.size(SwitchDefaults.IconSize),
+                            tint = Color.White
+                        )
+                    }
+                } else {
+                    {
+                        Icon(
+                            imageVector = Icons.Filled.Brightness4,
+                            contentDescription = null,
+                            modifier = Modifier.size(SwitchDefaults.IconSize),
+                            tint = Color.White
+                        )
+                    }
+                },
+                modifier = Modifier.padding(end = 30.dp)
+
             )
         }
     }
@@ -403,58 +426,13 @@ fun FABTarea(onClickIcon: () -> Unit) {
     }
 }
 
-@Composable
-fun MyBottomNavigationTarea() {
-    var myIndex by rememberSaveable { mutableStateOf(0) }
-    NavigationBar(containerColor = Color(0xff0a5483)) {
-        NavigationBarItem(
-            selected = myIndex == 0,
-            onClick = { myIndex = 0 },
-            icon = {
-                Icon(imageVector = Icons.Default.Home, contentDescription = "Home")
-            },
-            label = { Text(text = "Inicio", color = Color.White) },
-            colors = NavigationBarItemDefaults.colors(
-                selectedIconColor = Color(0xff0a5483),
-                unselectedIconColor = Color(0xffaedd2b),
-                selectedTextColor = Color.White,
-                unselectedTextColor = Color.LightGray,
-            )
-        )
-        NavigationBarItem(
-            selected = myIndex == 1,
-            onClick = { myIndex = 1 },
-            icon = {
-                Icon(imageVector = Icons.Default.Favorite, contentDescription = "Favorite")
-            },
-            label = { Text(text = "Favorite", color = Color.White) },
-            colors = NavigationBarItemDefaults.colors(
-                selectedIconColor = Color(0xff0a5483),
-                unselectedIconColor = Color(0xffaedd2b),
-                selectedTextColor = Color.White,
-                unselectedTextColor = Color.LightGray,
-            )
-        )
-        NavigationBarItem(
-            selected = myIndex == 2,
-            onClick = { myIndex = 2 },
-            icon = {
-                Icon(imageVector = Icons.Default.Person, contentDescription = "Person")
-            },
-            label = { Text(text = "Inicio", color = Color.White) },
-            colors = NavigationBarItemDefaults.colors(
-                selectedIconColor = Color(0xff0a5483),
-                unselectedIconColor = Color(0xffaedd2b),
-                selectedTextColor = Color.White,
-                unselectedTextColor = Color.LightGray,
-            )
-        )
-    }
-}
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyTopAppBarTarea(onClickIcon: (String) -> Unit, onClickDrawer: () -> Unit, navigationController: NavController) {
+fun MyTopAppBarTarea(
+    onClickIcon: (String) -> Unit,
+    onClickDrawer: () -> Unit,
+    navigationController: NavController
+) {
     val viewModel: NotificacionViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
     val notificaciones by viewModel.notificaciones.observeAsState(emptyList())
     val notificacionesPendientes = notificaciones.count { !it.leida }
@@ -521,34 +499,4 @@ fun MyTopAppBarTarea(onClickIcon: (String) -> Unit, onClickDrawer: () -> Unit, n
 
         )
     )
-}
-
-@Composable
-fun MySnackbar(snackbarData: SnackbarData) {
-    Snackbar(
-        modifier = Modifier.padding(8.dp),
-        containerColor = Color(0xFF066699),
-        contentColor = Color.White,
-        shape = RoundedCornerShape(12.dp)
-    ) {
-        Row(
-            Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Start,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                imageVector = Icons.Default.Info,
-                contentDescription = "Info",
-                tint = Color(0xffaedd2b),
-                modifier = Modifier.padding(end = 8.dp)
-            )
-            Text(text = snackbarData.visuals.message)
-
-            snackbarData.visuals.actionLabel?.let { actionLabel ->
-                TextButton(onClick = { snackbarData.performAction() }) {
-                    Text(actionLabel, color = Color.Yellow)
-                }
-            }
-        }
-    }
 }
