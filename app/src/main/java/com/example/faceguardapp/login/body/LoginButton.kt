@@ -69,6 +69,7 @@ fun performLogin(
                             usernameStore.saveUsername(it.username)
                         }
                         navigationController.navigate(MainRoutes.Home.route)
+                        navigationController.popBackStack()
                     } ?: onError("Error: Respuesta vacía")
                 } else {
                     onError("Error: ${response.message()}")
