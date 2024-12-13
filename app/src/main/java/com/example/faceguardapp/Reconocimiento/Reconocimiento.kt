@@ -17,6 +17,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import java.io.ByteArrayOutputStream
 import android.util.Base64
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.platform.LocalContext
 import com.example.faceguardapp.RetrofitClient
@@ -40,6 +42,7 @@ fun FotografiaScreen() {
     var success by rememberSaveable { mutableStateOf("") }
     var username =
         UsernameStore(LocalContext.current).getUsername.collectAsState(initial = "").value.toString()
+    var isLoading by rememberSaveable() { mutableStateOf(false) }
 
     bitmap.value?.let {
         imageBase64.value = bitmapToBase64(it)
@@ -68,7 +71,7 @@ fun FotografiaScreen() {
         }
         Button(onClick = {
             permissionLauncher.launch(android.Manifest.permission.CAMERA)
-        }) {
+        }, enabled = !isLoading) {
             Text(text = "Tomar Foto")
         }
         bitmap.value?.let {
@@ -76,17 +79,25 @@ fun FotografiaScreen() {
                 reconocimiento(
                     username = username,
                     image = imageBase64.value.toString(),
-                    onError = { error ->
-                        println(error)
-                    },
                     onSuccess = { result ->
                         success = result
+                    },
+                    isLoading = {
+                        isLoading = it
                     }
                 )
-            }) {
+            }, enabled = !isLoading) {
                 Text(text = "Reconocer")
             }
             Text(text = success)
+        }
+        if (isLoading) {
+            CircularProgressIndicator(
+                modifier = Modifier.width(32.dp),
+                color = MaterialTheme.colorScheme.secondary,
+                trackColor = MaterialTheme.colorScheme.surfaceVariant,
+            )
+
         }
     }
 }
@@ -101,9 +112,10 @@ fun bitmapToBase64(bitmap: Bitmap): String {
 fun reconocimiento(
     username: String,
     image: String,
-    onError: (String) -> Unit,
-    onSuccess: (String) -> Unit
+    onSuccess: (String) -> Unit,
+    isLoading: (Boolean) -> Unit
 ) {
+    isLoading(true)
     CoroutineScope(Dispatchers.IO).launch {
         RetrofitClient.apiReconocimiento.reconocimiento(username, "data:image/png;base64,${image}")
             .enqueue(object : Callback<ReconocimientoResponse> {
@@ -114,14 +126,20 @@ fun reconocimiento(
                     if (response.isSuccessful) {
                         response.body()?.let {
                             onSuccess(it.success + " " + it.result)
-                        } ?: onError("Error: Respuesta vacía")
+                            isLoading(false)
+                        } ?: {
+                            onSuccess("Error: Respuesta vacía")
+                            isLoading(false)
+                        }
                     } else {
-                        onError("Error: ${response}")
+                        onSuccess("Error: ${response}")
+                        isLoading(false)
                     }
                 }
 
                 override fun onFailure(call: Call<ReconocimientoResponse>, t: Throwable) {
-                    onError("Error: ${t.message}")
+                    onSuccess("Error: ${t.message}")
+                    isLoading(false)
                 }
             })
     }
