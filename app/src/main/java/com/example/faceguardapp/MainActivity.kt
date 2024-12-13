@@ -1,6 +1,5 @@
 package com.example.faceguardapp
 
-import FotografiaScreen
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -51,12 +50,6 @@ class MainActivity : ComponentActivity() {
                         }
                         composable(MainRoutes.Home.route) {
                             HomeScreen(navigationController)
-                        }
-                        composable(MainRoutes.Notificaciones.route) {
-                            NotificacionesScreen()
-                        }
-                        composable(MainRoutes.Reconocimiento.route) {
-                            FotografiaScreen()
                         }
 //                        composable(
 //                            Routes.Screen4.route,

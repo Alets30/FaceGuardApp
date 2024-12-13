@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.faceguardapp.notificaciones.viewmodels.NotificacionViewModel
 import com.example.faceguardapp.routes.MainRoutes
+import com.example.faceguardapp.routes.ScaffoldRoutes
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -79,7 +80,7 @@ fun MyTopAppBarTarea(
                     }
                 }
             ) {
-                IconButton(onClick = { navigationController.navigate(MainRoutes.Notificaciones.route) }) {
+                IconButton(onClick = { navigationController.navigate(ScaffoldRoutes.Notificaciones.route) }) {
                     Icon(
                         imageVector = Icons.Default.Notifications,
                         contentDescription = "Notificacion",

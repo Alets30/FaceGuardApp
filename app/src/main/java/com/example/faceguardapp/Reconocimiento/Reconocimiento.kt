@@ -30,7 +30,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 @Composable
-fun FotografiaScreen() {
+fun ReconocimientoScreen() {
     val bitmap = remember { mutableStateOf<Bitmap?>(null) }
     val cameraLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.TakePicturePreview(),
@@ -97,7 +97,6 @@ fun FotografiaScreen() {
                 color = MaterialTheme.colorScheme.secondary,
                 trackColor = MaterialTheme.colorScheme.surfaceVariant,
             )
-
         }
     }
 }

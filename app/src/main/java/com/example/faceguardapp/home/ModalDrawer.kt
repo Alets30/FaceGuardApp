@@ -42,6 +42,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.faceguardapp.Constantes
 import com.example.faceguardapp.routes.MainRoutes
+import com.example.faceguardapp.routes.ScaffoldRoutes
 import com.example.faceguardapp.stores.StoreDarkMode
 import kotlinx.coroutines.launch
 
@@ -208,7 +209,10 @@ fun MyModalDrawer(
                 )
             }
         }
-        TextButton(onClick = { navigationController.navigate(MainRoutes.Reconocimiento.route) }) {
+        TextButton(onClick = {
+            navigationController.navigate(ScaffoldRoutes.Reconocimiento.route)
+            onCloseDrawer()
+        }) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
@@ -237,7 +241,7 @@ fun MyModalDrawer(
             modifier = Modifier.padding(8.dp),
         )
         TextButton(onClick = {
-            navigationController.navigate(MainRoutes.Notificaciones.route)
+            navigationController.navigate(ScaffoldRoutes.Notificaciones.route)
             onCloseDrawer()
         }) {
             Row(
