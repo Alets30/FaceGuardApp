@@ -19,6 +19,7 @@ import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Nightlight
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.PersonSearch
 import androidx.compose.material.icons.filled.Repeat
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -198,6 +199,26 @@ fun MyModalDrawer(
                 )
                 Text(
                     text = "Movimientos",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp),
+                    color = Color.White,
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.Normal
+                )
+            }
+        }
+        TextButton(onClick = { navigationController.navigate(MainRoutes.Reconocimiento.route) }) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.PersonSearch,
+                    contentDescription = "Reconocimiento",
+                    tint = Color.White
+                )
+                Text(
+                    text = "Reconocimiento",
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(8.dp),

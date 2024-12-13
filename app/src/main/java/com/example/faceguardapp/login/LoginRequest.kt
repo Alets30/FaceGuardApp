@@ -8,7 +8,6 @@ data class LoginResponse(
     val token: String,
     val username: String
 )
-
 //data class ProfileRequest(val token: String)
 data class ProfileResponse(val username: String)
 
