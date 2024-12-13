@@ -24,14 +24,18 @@ fun Email(
     TextField(
         value = email,
         onValueChange = { onTextChanged(it) },
-        modifier = modifier.fillMaxWidth().clip(RoundedCornerShape(12.dp)),
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(12.dp)),
         singleLine = true,
-        placeholder = { Text(text = "Email") },
         colors = TextFieldDefaults.colors(
             unfocusedContainerColor = Color.White,
             focusedContainerColor = Color.White,
             unfocusedTextColor = Color.Black,
             focusedTextColor = Color.Black
         ),
+        label = {
+            Text(text = "Username")
+        }
     )
 }
