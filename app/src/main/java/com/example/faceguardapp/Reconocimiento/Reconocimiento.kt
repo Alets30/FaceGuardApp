@@ -17,10 +17,30 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import java.io.ByteArrayOutputStream
 import android.util.Base64
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CameraAlt
+import androidx.compose.material.icons.filled.PersonSearch
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.sp
+import com.example.faceguardapp.Constantes
 import com.example.faceguardapp.RetrofitClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -61,43 +81,102 @@ fun ReconocimientoScreen() {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        bitmap.value?.asImageBitmap()?.let {
-            Image(
-                bitmap = it,
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.width(300.dp)
-            )
-        }
-        Button(onClick = {
-            permissionLauncher.launch(android.Manifest.permission.CAMERA)
-        }, enabled = !isLoading) {
-            Text(text = "Tomar Foto")
-        }
-        bitmap.value?.let {
-            Button(onClick = {
-                reconocimiento(
-                    username = username,
-                    image = imageBase64.value.toString(),
-                    onSuccess = { result ->
-                        success = result
-                    },
-                    isLoading = {
-                        isLoading = it
-                    }
+        Box(
+            modifier = Modifier
+                .width(400.dp)
+                .height(400.dp)
+                .padding(vertical = 10.dp),
+        ) {
+            bitmap.value?.asImageBitmap()?.let {
+                Image(
+                    bitmap = it,
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .size(400.dp)
+                        .clip(RoundedCornerShape(100)),
                 )
-            }, enabled = !isLoading) {
-                Text(text = "Reconocer")
             }
-            Text(text = success)
+        }
+        Row {
+            IconButton(
+                onClick = {
+                    permissionLauncher.launch(android.Manifest.permission.CAMERA)
+                },
+                enabled = !isLoading,
+                modifier = Modifier
+                    .padding(horizontal = 10.dp)
+                    .size(80.dp)
+                    .clip(RoundedCornerShape(100.dp)),
+                colors = IconButtonDefaults.iconButtonColors(
+                    containerColor = Color(Constantes.PRIMARY_BLUE),
+                    contentColor = Color(Constantes.WHITE),
+                    disabledContainerColor = Color(Constantes.TERTIARY_BLUE),
+                    disabledContentColor = Color.LightGray
+                )
+            ) {
+                Icon(
+                    imageVector = Icons.Default.CameraAlt,
+                    contentDescription = "Tomar foto",
+                    tint = Color(Constantes.WHITE),
+                    modifier = Modifier.size(30.dp)
+                )
+            }
+            bitmap.value?.let {
+                IconButton(
+                    onClick = {
+                        success = ""
+                        reconocimiento(
+                            username = username,
+                            image = imageBase64.value.toString(),
+                            onSuccess = { result ->
+                                success = result
+                            },
+                            isLoading = {
+                                isLoading = it
+                            }
+                        )
+                    },
+                    enabled = !isLoading,
+                    modifier = Modifier
+                        .padding(horizontal = 10.dp)
+                        .size(80.dp)
+                        .clip(RoundedCornerShape(100.dp)),
+                    colors = IconButtonDefaults.iconButtonColors(
+                        containerColor = Color(Constantes.PRIMARY_BLUE),
+                        contentColor = Color(Constantes.WHITE),
+                        disabledContainerColor = Color(Constantes.TERTIARY_BLUE),
+                        disabledContentColor = Color.LightGray
+                    )
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.PersonSearch,
+                        contentDescription = "Reconocer",
+                        tint = Color(Constantes.WHITE),
+                        modifier = Modifier.size(30.dp)
+                    )
+                }
+            }
         }
         if (isLoading) {
             CircularProgressIndicator(
-                modifier = Modifier.width(32.dp),
+                modifier = Modifier
+                    .padding(top = 16.dp)
+                    .width(32.dp),
                 color = MaterialTheme.colorScheme.secondary,
                 trackColor = MaterialTheme.colorScheme.surfaceVariant,
             )
         }
+        Text(
+            text = success,
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Normal,
+            color = Color.DarkGray,
+            modifier = Modifier
+                .padding(8.dp)
+                .fillMaxWidth(),
+            textAlign = TextAlign.Center
+        )
     }
 }
 
@@ -124,7 +203,10 @@ fun reconocimiento(
                 ) {
                     if (response.isSuccessful) {
                         response.body()?.let {
-                            onSuccess(it.success + " " + it.result)
+                            onSuccess(
+                                if (it.success) "Acceso concedido: Rostros coincidentes"
+                                else "Acceso denegado: Intento de ingreso no autorizado"
+                            )
                             isLoading(false)
                         } ?: {
                             onSuccess("Error: Respuesta vacía")

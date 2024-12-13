@@ -6,7 +6,7 @@ import retrofit2.http.FormUrlEncoded
 import retrofit2.http.Header
 
 data class ReconocimientoRequest(val usuario: String, val photo: String)
-data class ReconocimientoResponse(val success: String, val result: String)
+data class ReconocimientoResponse(val success: Boolean, val result: String)
 
 interface ReconocimientoApiService {
     @FormUrlEncoded
