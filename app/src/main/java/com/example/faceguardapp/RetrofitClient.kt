@@ -3,6 +3,7 @@ package com.example.faceguardapp
 import AuthApiService
 import ReconocimientoApiService
 import com.example.faceguardapp.notificaciones.data.NotificacionApiService
+import com.example.faceguardapp.roles.data.RolApiService
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -52,6 +53,15 @@ object RetrofitClient {
             .client(okHttpClient)
             .build()
             .create(NotificacionApiService::class.java)
+    }
+
+    val apiRoles: RolApiService by lazy {
+        Retrofit.Builder()
+            .baseUrl(Constantes.BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(okHttpClient)
+            .build()
+            .create(RolApiService::class.java)
     }
 
     fun setToken(newToken: String) {

@@ -34,6 +34,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.faceguardapp.Constantes
 import com.example.faceguardapp.RetrofitClient
 import com.example.faceguardapp.notificaciones.components.NotificacionesScreen
+import com.example.faceguardapp.roles.components.RolesListScreen
 import com.example.faceguardapp.routes.MainRoutes
 import com.example.faceguardapp.routes.ScaffoldRoutes
 import kotlinx.coroutines.launch
@@ -100,6 +101,9 @@ fun HomeScreen(navigationController: NavController) {
                         }
                         composable(ScaffoldRoutes.Notificaciones.route) {
                             NotificacionesScreen()
+                        }
+                        composable(ScaffoldRoutes.Roles.route){
+                            RolesListScreen()
                         }
                     }
                 }
