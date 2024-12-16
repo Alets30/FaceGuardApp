@@ -14,6 +14,7 @@ import androidx.compose.material.icons.filled.Brightness4
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DoorBack
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.LocationCity
 import androidx.compose.material.icons.filled.LockPerson
 import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Nightlight
@@ -192,6 +193,30 @@ fun MyModalDrawer(
                 )
             }
         }
+        TextButton(onClick = {
+            navigationController.navigate(ScaffoldRoutes.Zonas.route)
+            onCloseDrawer()
+        }) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Icon(
+                    imageVector = Icons.Default.LocationCity,
+                    contentDescription = "Zonas",
+                    tint = Color.White
+                )
+                Text(
+                    text = "Zonas",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp),
+                    color = Color.White,
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.Normal
+                )
+            }
+        }
+
         TextButton(onClick = { onCloseDrawer() }) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,

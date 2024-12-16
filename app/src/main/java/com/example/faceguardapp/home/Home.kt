@@ -37,6 +37,7 @@ import com.example.faceguardapp.notificaciones.components.NotificacionesScreen
 import com.example.faceguardapp.roles.components.RolesListScreen
 import com.example.faceguardapp.routes.MainRoutes
 import com.example.faceguardapp.routes.ScaffoldRoutes
+import com.example.faceguardapp.zonas.components.ZonasListScreen
 import kotlinx.coroutines.launch
 
 
@@ -104,6 +105,9 @@ fun HomeScreen(navigationController: NavController) {
                         }
                         composable(ScaffoldRoutes.Roles.route){
                             RolesListScreen()
+                        }
+                        composable(ScaffoldRoutes.Zonas.route){
+                            ZonasListScreen()
                         }
                     }
                 }
