@@ -1,5 +1,6 @@
 package com.example.faceguardapp.roles.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -28,7 +29,7 @@ fun RolesListScreen(viewModel: RolViewModel = viewModel()) {
             .padding(16.dp)
             .padding(top = 30.dp)
     ) {
-        Text(text = "Roles")
+        Text(text = "Roles", style = MaterialTheme.typography.titleLarge)
         Spacer(modifier = Modifier.height(16.dp))
         Button(
             onClick = { showCreateDialog = true
@@ -216,21 +217,37 @@ fun RoleItem(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp)
+            .padding(8.dp),
+        elevation = CardDefaults.cardElevation(4.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = Color.White,
+        )
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             TextField(
                 value = nombre,
                 onValueChange = { nombre = it },
                 label = { Text("Nombre") },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                colors = TextFieldDefaults.colors(
+                    unfocusedContainerColor = Color.White,
+                    focusedContainerColor = Color.White,
+                    unfocusedIndicatorColor = Color.LightGray,
+                    focusedIndicatorColor = Color(Constantes.SECONDARY_BLUE)
+                )
             )
             Spacer(modifier = Modifier.height(8.dp))
             TextField(
                 value = descripcion,
                 onValueChange = { descripcion = it },
                 label = { Text("Descripción") },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                colors = TextFieldDefaults.colors(
+                    unfocusedContainerColor = Color.White,
+                    focusedContainerColor = Color.White,
+                    unfocusedIndicatorColor = Color.LightGray,
+                    focusedIndicatorColor = Color(Constantes.SECONDARY_BLUE)
+                )
             )
             Spacer(modifier = Modifier.height(8.dp))
             Row(

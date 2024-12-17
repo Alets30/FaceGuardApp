@@ -37,6 +37,8 @@ import com.example.faceguardapp.notificaciones.components.NotificacionesScreen
 import com.example.faceguardapp.roles.components.RolesListScreen
 import com.example.faceguardapp.routes.MainRoutes
 import com.example.faceguardapp.routes.ScaffoldRoutes
+import com.example.faceguardapp.usuarios.components.EditProfileView
+import com.example.faceguardapp.usuarios.components.UsuariosListScreen
 import com.example.faceguardapp.zonas.components.ZonasListScreen
 import kotlinx.coroutines.launch
 
@@ -108,6 +110,16 @@ fun HomeScreen(navigationController: NavController) {
                         }
                         composable(ScaffoldRoutes.Zonas.route){
                             ZonasListScreen()
+                        }
+                        composable(ScaffoldRoutes.Usuarios.route){
+                            UsuariosListScreen(navController = scaffoldNavigationController)
+                        }
+                        composable(ScaffoldRoutes.EditProfile.route) { backStackEntry ->
+                            val profileId = backStackEntry.arguments?.getString("id")?.toInt() ?: return@composable
+                            EditProfileView(
+                                profileId = profileId,
+                                navController = scaffoldNavigationController
+                            )
                         }
                     }
                 }
