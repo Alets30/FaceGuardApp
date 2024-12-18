@@ -40,6 +40,7 @@ import com.example.faceguardapp.roles.components.RolesListScreen
 import com.example.faceguardapp.routes.MainRoutes
 import com.example.faceguardapp.routes.ScaffoldRoutes
 import com.example.faceguardapp.usuarios.components.EditProfileView
+import com.example.faceguardapp.usuarios.components.PuertasListScreen
 import com.example.faceguardapp.usuarios.components.UsuariosListScreen
 import com.example.faceguardapp.zonas.components.ZonasListScreen
 import kotlinx.coroutines.launch
@@ -128,6 +129,9 @@ fun HomeScreen(navigationController: NavController) {
                         }
                         composable(ScaffoldRoutes.Movimientos.route){
                             MovimientoScreen()
+                        }
+                        composable(ScaffoldRoutes.Puertas.route){
+                            PuertasListScreen()
                         }
                     }
                 }

@@ -30,6 +30,7 @@ fun UsuariosListScreen(navController: NavController, viewModel: ProfileViewModel
     val usuarios by viewModel.usuarios.observeAsState(emptyList())
     val mensajeEstado by viewModel.mensajeEstado.observeAsState()
 
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -66,7 +67,6 @@ fun UsuariosListScreen(navController: NavController, viewModel: ProfileViewModel
 @Composable
 fun UsuarioItem(profile: Profile, navController: NavController, viewModel: ProfileViewModel) {
     var showRoleDialog by remember { mutableStateOf(false) }
-
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -76,9 +76,11 @@ fun UsuarioItem(profile: Profile, navController: NavController, viewModel: Profi
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(text = "Clave: ${profile.user_id}", style = MaterialTheme.typography.titleMedium)
+            Spacer(modifier = Modifier.height(4.dp))
             Text(text = "Nombre: ${profile.nombre} ${profile.apellido_p} ${profile.apellido_m}")
+            Spacer(modifier = Modifier.height(4.dp))
             Text(text = "Teléfono: ${profile.telefono}")
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
             // Botón Editar
             Button(
@@ -93,19 +95,20 @@ fun UsuarioItem(profile: Profile, navController: NavController, viewModel: Profi
             ) {
                 Text("Editar")
             }
-
-            // Botón Asignar Rol
-            Spacer(modifier = Modifier.height(8.dp))
-            Button(
-                onClick = { showRoleDialog = true },
-                colors = ButtonDefaults.buttonColors(
-                    disabledContainerColor = Color.Gray,
-                    contentColor = Color(Constantes.WHITE),
-                    containerColor = Color(Constantes.SECONDARY_BLUE)
-                )
-            ) {
-                Text("Asignar Rol")
-            }
+            Spacer(modifier = Modifier.height(6.dp))
+            //if() {
+                // Botón Asignar Rol
+                Button(
+                    onClick = { showRoleDialog = true },
+                    colors = ButtonDefaults.buttonColors(
+                        disabledContainerColor = Color.Gray,
+                        contentColor = Color(Constantes.WHITE),
+                        containerColor = Color(Constantes.SECONDARY_BLUE)
+                    )
+                ) {
+                    Text("Asignar Rol")
+                }
+           // }
         }
     }
 
@@ -168,8 +171,8 @@ fun AsignarRolDialog(
         confirmButton = {
             Button(
                 onClick = {
-                        viewModel.asignarRol(profile.id, selectedRoleId!!, fechaVencimiento)
-                        onDismiss()
+                    viewModel.asignarRol(profile.id, selectedRoleId!!, fechaVencimiento)
+                    onDismiss()
                 },
                 colors = ButtonDefaults.buttonColors(
                     disabledContainerColor = Color.Gray,

@@ -156,7 +156,10 @@ fun MyModalDrawer(
                 )
             }
         }
-        TextButton(onClick = { onCloseDrawer() }) {
+        TextButton(onClick = {
+            navigationController.navigate(ScaffoldRoutes.Puertas.route)
+            onCloseDrawer()
+        }) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
