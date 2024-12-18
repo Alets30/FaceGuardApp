@@ -1,7 +1,9 @@
 package com.example.faceguardapp.roles.repository
 
 import com.example.faceguardapp.RetrofitClient
+import com.example.faceguardapp.roles.models.ApiResponse
 import com.example.faceguardapp.roles.models.Rol
+import com.example.faceguardapp.roles.models.RoleAssignRequest
 import retrofit2.Response
 
 class RolRepository {
@@ -21,5 +23,13 @@ class RolRepository {
 
     suspend fun eliminarRol(id: Int): Response<Void> {
         return api.eliminarRol(id)
+    }
+
+    suspend fun obtenerRolesNoAsignados(profileId: Int): Response<List<Rol>> {
+        return api.obtenerRolesNoAsignados(profileId)
+    }
+
+    suspend fun asignarRol(profileId: Int, roleAssignRequest: RoleAssignRequest): Response<ApiResponse> {
+        return api.asignarRol(profileId, roleAssignRequest)
     }
 }
