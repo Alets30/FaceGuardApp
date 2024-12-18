@@ -15,6 +15,9 @@ interface AuthApiService {
     @POST("api/login")
     fun login(@Body request: LoginRequest): Call<LoginResponse>
 
+    @POST("api/register")
+    fun register(@Body request: LoginRequest): Call<LoginResponse>
+
     @POST("api/profile")
     fun profile(): Call<ProfileResponse>
 }

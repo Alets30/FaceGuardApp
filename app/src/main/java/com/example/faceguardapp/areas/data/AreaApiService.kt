@@ -11,7 +11,7 @@ interface AreaApiService {
     suspend fun obtenerAreas(): Response<List<Area>>
 
     @POST("api/areas/create")
-    suspend fun crearArea(@Body area: AreaRequest): Response<Area>
+    suspend fun crearArea(@Body area: AreaRequest): Response<AreaRequest>
 
     @PUT("api/areas/update/{id}")
     suspend fun actualizarArea(@Path("id") id: Int, @Body area: AreaRequest): Response<AreaRequest>

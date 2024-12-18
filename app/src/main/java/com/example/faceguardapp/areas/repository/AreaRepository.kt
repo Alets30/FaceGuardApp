@@ -12,7 +12,7 @@ class AreaRepository {
         return api.obtenerAreas()
     }
 
-    suspend fun crearArea(area: AreaRequest): Response<Area> {
+    suspend fun crearArea(area: AreaRequest): Response<AreaRequest> {
         return api.crearArea(area)
     }
 

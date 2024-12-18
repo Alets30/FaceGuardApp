@@ -86,13 +86,14 @@ fun AreasListScreen(
     if (showCreateDialog) {
         println("Mostrando el diálogo para crear una área")
         CreateAreaDialog(
+            listaZonas = zonas,
             onDismiss = { showCreateDialog = false },
             onCreate = { nuevaArea ->
                 val nuevaAreaFormateada = AreaRequest(
                     nombre = nuevaArea.nombre,
                     descripcion = nuevaArea.descripcion,
                     activo = nuevaArea.activo,
-                    zonas = nuevaArea.zonas.map { it.id }
+                    zonas = nuevaArea.zonas
                 )
                 viewModel.crearArea(nuevaAreaFormateada)
                 showCreateDialog = false
@@ -146,11 +147,13 @@ fun AreasListScreen(
 
 @Composable
 fun CreateAreaDialog(
+    listaZonas: List<Zona>,
     onDismiss: () -> Unit,
-    onCreate: (Area) -> Unit
+    onCreate: (AreaRequest) -> Unit
 ) {
     var nombre by remember { mutableStateOf("") }
     var descripcion by remember { mutableStateOf("") }
+    var zonas by remember { mutableStateOf<List<Zona>>(emptyList()) }
     var activo by remember { mutableStateOf(false) }
 
     AlertDialog(
@@ -182,17 +185,23 @@ fun CreateAreaDialog(
                         onCheckedChange = { activo = it }
                     )
                 }
+                ZonaDropdown(
+                    zonas = listaZonas,
+                    selectedZona = zonas.firstOrNull(),
+                    onZonaSelected = { selectedZona ->
+                        zonas = listOf(selectedZona)
+                    }
+                )
             }
         },
         confirmButton = {
             Button(
                 onClick = {
-                    val nuevaArea = Area(
-                        id = 0, // El ID será asignado por el backend
+                    val nuevaArea = AreaRequest(
                         nombre = nombre,
                         descripcion = descripcion,
                         activo = activo,
-                        zonas = listOf()
+                        zonas = zonas.map { it.id }
                     )
                     onCreate(nuevaArea)
                 },
