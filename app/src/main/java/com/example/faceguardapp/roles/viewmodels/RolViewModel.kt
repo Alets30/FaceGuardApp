@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.faceguardapp.roles.models.Rol
+import com.example.faceguardapp.roles.models.RoleAssignRequest
 import com.example.faceguardapp.roles.repository.RolRepository
 import kotlinx.coroutines.launch
 

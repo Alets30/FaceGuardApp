@@ -6,3 +6,14 @@ data class Rol (
     val descripcion: String,
     val activo: Boolean
 )
+
+// RoleAssignRequest.kt
+data class RoleAssignRequest(
+    val role_id: Int,
+    val fecha_vencimiento: String? = null
+)
+
+// ApiResponse.kt
+data class ApiResponse(
+    val message: String
+)
