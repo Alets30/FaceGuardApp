@@ -63,7 +63,7 @@ fun NotificacionItem(
     notificacion: Notificacion,
     onMarcarComoLeida: () -> Unit
 ) {
-    // Usamos un Row para organizar el avatar y el contenido de la notificación
+
     Row(
         modifier = Modifier
             .fillMaxWidth()

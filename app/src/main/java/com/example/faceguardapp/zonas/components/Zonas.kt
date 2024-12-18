@@ -8,8 +8,10 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.faceguardapp.Constantes
 import com.example.faceguardapp.zonas.viewmodels.ZonaViewModel
 import com.example.faceguardapp.zonas.model.Zona
 
@@ -32,6 +34,11 @@ fun ZonasListScreen(viewModel: ZonaViewModel = viewModel()) {
             onClick = { showCreateDialog = true
                 println("Botón Crear Zona presionado")},
             modifier = Modifier.align(Alignment.Start),
+            colors = ButtonDefaults.buttonColors(
+                disabledContainerColor = Color.Gray,
+                contentColor = Color.White,
+                containerColor = Color(Constantes.SECONDARY_BLUE)
+            )
         ) {
             Text("Crear Zona")
         }
@@ -187,21 +194,36 @@ fun ZonaItem(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp)
+            .padding(8.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = Color(0xFFF5F5F5)
+        )
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             TextField(
                 value = nombre,
                 onValueChange = { nombre = it },
                 label = { Text("Nombre") },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                colors = TextFieldDefaults.colors(
+                    unfocusedContainerColor = Color.White,
+                    focusedContainerColor = Color.White,
+                    unfocusedIndicatorColor = Color.LightGray,
+                    focusedIndicatorColor = Color(Constantes.SECONDARY_BLUE)
+                )
             )
             Spacer(modifier = Modifier.height(8.dp))
             TextField(
                 value = descripcion,
                 onValueChange = { descripcion = it },
                 label = { Text("Descripción") },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                colors = TextFieldDefaults.colors(
+                    unfocusedContainerColor = Color.White,
+                    focusedContainerColor = Color.White,
+                    unfocusedIndicatorColor = Color.LightGray,
+                    focusedIndicatorColor = Color(Constantes.SECONDARY_BLUE)
+                )
             )
             Spacer(modifier = Modifier.height(8.dp))
             Row(
@@ -212,7 +234,12 @@ fun ZonaItem(
                 Spacer(modifier = Modifier.weight(1f))
                 Switch(
                     checked = activo,
-                    onCheckedChange = { activo = it }
+                    onCheckedChange = { activo = it },
+                    colors = SwitchDefaults.colors(
+                        uncheckedThumbColor = Color.LightGray,
+                        checkedTrackColor = Color(0xFF4CAF50),
+                        uncheckedTrackColor = Color.Gray
+                    )
                 )
             }
             Spacer(modifier = Modifier.height(16.dp))
@@ -220,7 +247,12 @@ fun ZonaItem(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Button(onClick = onEliminarClick) {
+                Button(onClick = onEliminarClick,
+                    colors = ButtonDefaults.buttonColors(
+                        disabledContainerColor = Color.Gray,
+                        contentColor = Color(Constantes.WHITE),
+                        containerColor = Color.Red
+                    )) {
                     Text("Eliminar")
                 }
                 Button(
@@ -232,7 +264,12 @@ fun ZonaItem(
                         )
                         onActualizarClick(zonaActualizada)
                     },
-                    enabled = isModified
+                    enabled = isModified,
+                    colors = ButtonDefaults.buttonColors(
+                        disabledContainerColor = Color.Gray,
+                        contentColor = Color(Constantes.WHITE),
+                        containerColor = Color(Constantes.SECONDARY_BLUE)
+                    )
                 ) {
                     Text("Actualizar")
                 }

@@ -2,6 +2,7 @@ package com.example.faceguardapp
 
 import AuthApiService
 import ReconocimientoApiService
+import com.example.faceguardapp.movimientos.data.MovimientoApiService
 import com.example.faceguardapp.notificaciones.data.NotificacionApiService
 import com.example.faceguardapp.roles.data.RolApiService
 import com.example.faceguardapp.usuarios.models.Profile
@@ -84,6 +85,16 @@ object RetrofitClient {
             .build()
             .create(ProfileApiService::class.java)
     }
+
+    val apiMovimientos: MovimientoApiService by lazy {
+        Retrofit.Builder()
+            .baseUrl(Constantes.BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(okHttpClient)
+            .build()
+            .create(MovimientoApiService::class.java)
+    }
+
 
     fun setToken(newToken: String) {
         token = newToken
