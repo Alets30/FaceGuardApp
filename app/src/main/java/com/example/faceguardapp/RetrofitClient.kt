@@ -3,8 +3,8 @@ package com.example.faceguardapp
 import AuthApiService
 import ReconocimientoApiService
 import com.example.faceguardapp.notificaciones.data.NotificacionApiService
+import com.example.faceguardapp.areas.data.AreaApiService
 import com.example.faceguardapp.roles.data.RolApiService
-import com.example.faceguardapp.usuarios.models.Profile
 import com.example.faceguardapp.zonas.data.ZonaApiService
 import com.example.faceguardapp.usuarios.data.ProfileApiService
 import okhttp3.Interceptor
@@ -74,6 +74,15 @@ object RetrofitClient {
             .client(okHttpClient)
             .build()
             .create(ZonaApiService::class.java)
+    }
+
+    val apiAreas: AreaApiService by lazy {
+        Retrofit.Builder()
+            .baseUrl(Constantes.BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(okHttpClient)
+            .build()
+            .create(AreaApiService::class.java)
     }
 
     val apiUsuarios: ProfileApiService by lazy {

@@ -33,6 +33,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.faceguardapp.Constantes
 import com.example.faceguardapp.RetrofitClient
+import com.example.faceguardapp.areas.components.AreasListScreen
 import com.example.faceguardapp.notificaciones.components.NotificacionesScreen
 import com.example.faceguardapp.roles.components.RolesListScreen
 import com.example.faceguardapp.routes.MainRoutes
@@ -110,6 +111,9 @@ fun HomeScreen(navigationController: NavController) {
                         }
                         composable(ScaffoldRoutes.Zonas.route){
                             ZonasListScreen()
+                        }
+                        composable(ScaffoldRoutes.Areas.route){
+                            AreasListScreen()
                         }
                         composable(ScaffoldRoutes.Usuarios.route){
                             UsuariosListScreen(navController = scaffoldNavigationController)
