@@ -21,6 +21,7 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -37,6 +38,7 @@ import com.example.faceguardapp.RetrofitClient
 import com.example.faceguardapp.movimientos.components.MovimientoScreen
 import com.example.faceguardapp.areas.components.AreasListScreen
 import com.example.faceguardapp.notificaciones.components.NotificacionesScreen
+import com.example.faceguardapp.notificaciones.viewmodels.NotificacionViewModel
 import com.example.faceguardapp.roles.components.RolesListScreen
 import com.example.faceguardapp.routes.MainRoutes
 import com.example.faceguardapp.routes.ScaffoldRoutes
@@ -59,6 +61,10 @@ fun HomeScreen(navigationController: NavController) {
     val usernameStore = UsernameStore(context)
     var logoutDialog by rememberSaveable { mutableStateOf(false) }
     val scaffoldNavigationController = rememberNavController()
+
+    val viewModel: NotificacionViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+    val notificaciones by viewModel.notificaciones.observeAsState(emptyList())
+    val notificacionesPendientes = notificaciones.count { !it.leida }
 
     val isStaffStore = IsStaffStore(context)
     val isStaff by isStaffStore.getIsStaff.collectAsState(initial = false)
@@ -88,7 +94,8 @@ fun HomeScreen(navigationController: NavController) {
                     scope.launch {
                         drawerState.open()
                     }
-                }, scaffoldNavigationController)
+                }, scaffoldNavigationController,
+                    viewModel, notificacionesPendientes)
             },
             modifier = Modifier.background(Color(0xfff8f8ec)),
             contentWindowInsets = WindowInsets.systemBars.union(WindowInsets.ime)

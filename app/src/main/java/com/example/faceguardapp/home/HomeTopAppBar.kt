@@ -30,11 +30,11 @@ import com.example.faceguardapp.routes.ScaffoldRoutes
 @Composable
 fun MyTopAppBarTarea(
     onClickDrawer: () -> Unit,
-    navigationController: NavController
+    navigationController: NavController,
+    viewModel: NotificacionViewModel,
+    notificacionesPendientes: Int
 ) {
-    val viewModel: NotificacionViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
-    val notificaciones by viewModel.notificaciones.observeAsState(emptyList())
-    val notificacionesPendientes = notificaciones.count { !it.leida }
+
 
     LaunchedEffect(Unit) {
         viewModel.cargarNotificaciones()

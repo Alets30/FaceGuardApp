@@ -34,7 +34,7 @@ import com.example.faceguardapp.notificaciones.models.Notificacion
 import com.example.faceguardapp.notificaciones.viewmodels.NotificacionViewModel
 
     @Composable
-    fun NotificacionesScreen() {
+    fun NotificacionesScreen(marcarLeída:) {
         val viewModel: NotificacionViewModel = viewModel()
         val notificaciones by viewModel.notificaciones.observeAsState(emptyList())
         val mensajeEstado by viewModel.mensajeEstado.observeAsState("")
