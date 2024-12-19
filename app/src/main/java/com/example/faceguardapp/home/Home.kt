@@ -19,6 +19,7 @@ import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -69,16 +70,20 @@ fun HomeScreen(navigationController: NavController) {
     val isStaffStore = IsStaffStore(context)
     val isStaff by isStaffStore.getIsStaff.collectAsState(initial = false)
 
+    LaunchedEffect(Unit) {
+        viewModel.cargarNotificaciones()
+    }
+
     ModalNavigationDrawer(
         //gesturesEnabled = false,
         drawerContent = {
             ModalDrawerSheet {
                 MyModalDrawer(
                     navigationController = scaffoldNavigationController, onCloseDrawer = {
-                    scope.launch {
-                        drawerState.close()
-                    }
-                },
+                        scope.launch {
+                            drawerState.close()
+                        }
+                    },
                     showLogoutDialog = {
                         logoutDialog = it
                     }, isStaff = isStaff
@@ -90,12 +95,14 @@ fun HomeScreen(navigationController: NavController) {
     ) {
         Scaffold(
             topBar = {
-                MyTopAppBarTarea(onClickDrawer = {
-                    scope.launch {
-                        drawerState.open()
-                    }
-                }, scaffoldNavigationController,
-                    viewModel, notificacionesPendientes)
+                MyTopAppBarTarea(
+                    onClickDrawer = {
+                        scope.launch {
+                            drawerState.open()
+                        }
+                    }, scaffoldNavigationController,
+                    notificacionesPendientes
+                )
             },
             modifier = Modifier.background(Color(0xfff8f8ec)),
             contentWindowInsets = WindowInsets.systemBars.union(WindowInsets.ime)
@@ -121,37 +128,47 @@ fun HomeScreen(navigationController: NavController) {
                             ReconocimientoScreen()
                         }
                         composable(ScaffoldRoutes.Notificaciones.route) {
-                            NotificacionesScreen()
+                            NotificacionesScreen(descontarBadge = {
+
+                            })
+
                         }
-                        composable(ScaffoldRoutes.Roles.route){
+                        composable(ScaffoldRoutes.Roles.route) {
                             RolesListScreen()
                         }
-                        composable(ScaffoldRoutes.Zonas.route){
+                        composable(ScaffoldRoutes.Zonas.route) {
                             ZonasListScreen()
                         }
-                        composable(ScaffoldRoutes.Areas.route){
+                        composable(ScaffoldRoutes.Areas.route) {
                             AreasListScreen()
                         }
-                        composable(ScaffoldRoutes.Usuarios.route){
+                        composable(ScaffoldRoutes.Usuarios.route) {
                             UsuariosListScreen(navController = scaffoldNavigationController)
                         }
                         composable(ScaffoldRoutes.EditProfile.route) { backStackEntry ->
-                            val profileId = backStackEntry.arguments?.getString("id")?.toInt() ?: return@composable
+                            val profileId = backStackEntry.arguments?.getString("id")?.toInt()
+                                ?: return@composable
                             EditProfileView(
                                 profileId = profileId,
                                 navController = scaffoldNavigationController
                             )
                         }
-                        composable(ScaffoldRoutes.Movimientos.route){
+                        composable(ScaffoldRoutes.Movimientos.route) {
                             MovimientoScreen()
                         }
-                        composable(ScaffoldRoutes.Puertas.route){
+                        composable(ScaffoldRoutes.Puertas.route) {
                             PuertasListScreen(navController = scaffoldNavigationController)
                         }
                         composable(ScaffoldRoutes.ReconocimientoFacial.route) { backStackEntry ->
-                            val puertaId = backStackEntry.arguments?.getString("puertaId")?.toInt() ?: return@composable
-                            val username = backStackEntry.arguments?.getString("username") ?: return@composable
-                            ReconocimientoFacial(puertaId = puertaId, username = username, navController = scaffoldNavigationController)
+                            val puertaId = backStackEntry.arguments?.getString("puertaId")?.toInt()
+                                ?: return@composable
+                            val username =
+                                backStackEntry.arguments?.getString("username") ?: return@composable
+                            ReconocimientoFacial(
+                                puertaId = puertaId,
+                                username = username,
+                                navController = scaffoldNavigationController
+                            )
                         }
                     }
                 }

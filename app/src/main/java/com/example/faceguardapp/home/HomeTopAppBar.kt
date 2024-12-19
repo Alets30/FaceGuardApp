@@ -31,15 +31,8 @@ import com.example.faceguardapp.routes.ScaffoldRoutes
 fun MyTopAppBarTarea(
     onClickDrawer: () -> Unit,
     navigationController: NavController,
-    viewModel: NotificacionViewModel,
     notificacionesPendientes: Int
 ) {
-
-
-    LaunchedEffect(Unit) {
-        viewModel.cargarNotificaciones()
-    }
-
 
     TopAppBar(
         title = {

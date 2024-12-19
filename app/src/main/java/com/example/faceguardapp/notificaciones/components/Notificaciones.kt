@@ -33,30 +33,35 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.faceguardapp.notificaciones.models.Notificacion
 import com.example.faceguardapp.notificaciones.viewmodels.NotificacionViewModel
 
-    @Composable
-    fun NotificacionesScreen(marcarLeída:) {
-        val viewModel: NotificacionViewModel = viewModel()
-        val notificaciones by viewModel.notificaciones.observeAsState(emptyList())
-        val mensajeEstado by viewModel.mensajeEstado.observeAsState("")
+@Composable
+fun NotificacionesScreen(descontarBadge: () -> Unit) {
+    val viewModel: NotificacionViewModel = viewModel()
+    val notificaciones by viewModel.notificaciones.observeAsState(emptyList())
+    val mensajeEstado by viewModel.mensajeEstado.observeAsState("")
 
-        LaunchedEffect(Unit) {
-            viewModel.cargarNotificaciones()
-        }
+    LaunchedEffect(Unit) {
+        viewModel.cargarNotificaciones()
+    }
 
-        if (mensajeEstado.isNotEmpty()) {
-            Text(text = mensajeEstado, color = Color.Red)
-        }
+    if (mensajeEstado.isNotEmpty()) {
+        Text(text = mensajeEstado, color = Color.Red)
+    }
 
-        LazyColumn (modifier = Modifier
-            .padding(top = 40.dp, start = 10.dp, end = 10.dp)){
-            items(notificaciones) { notificacion ->
-                NotificacionItem(
-                    notificacion = notificacion,
-                    onMarcarComoLeida = { viewModel.marcarComoLeida(notificacion.id) }
-                )
-            }
+    LazyColumn(
+        modifier = Modifier
+            .padding(top = 40.dp, start = 10.dp, end = 10.dp)
+    ) {
+        items(notificaciones) { notificacion ->
+            NotificacionItem(
+                notificacion = notificacion,
+                onMarcarComoLeida = {
+                    viewModel.marcarComoLeida(notificacion.id)
+                    descontarBadge()
+                }
+            )
         }
     }
+}
 
 @Composable
 fun NotificacionItem(
