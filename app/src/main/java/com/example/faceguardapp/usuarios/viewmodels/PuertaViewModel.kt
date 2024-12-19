@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.faceguardapp.usuarios.models.Puerta
+import com.example.faceguardapp.usuarios.models.PuertaRequest
 import com.example.faceguardapp.usuarios.repository.PuertaRepository
 import kotlinx.coroutines.launch
 
@@ -32,12 +33,12 @@ class PuertaViewModel : ViewModel() {
         }
     }
 
-    fun crearPuerta(puerta: Puerta) {
+    fun crearPuerta(puerta: PuertaRequest) {
         viewModelScope.launch {
             try {
                 val response = repository.crearPuerta(puerta)
                 if (response.isSuccessful) {
-                    cargarPuertas() // Recargar roles después de la creación
+                    cargarPuertas() // Recargar puertas después de la creación
                 } else {
                     _mensajeEstado.postValue("Error al crear puerta")
                 }
@@ -47,12 +48,12 @@ class PuertaViewModel : ViewModel() {
         }
     }
 
-    fun actualizarPuerta(id: Int, puerta: Puerta) {
+    fun actualizarPuerta(id: Int, puerta: PuertaRequest) {
         viewModelScope.launch {
             try {
                 val response = repository.actualizarPuerta(id, puerta)
                 if (response.isSuccessful) {
-                    cargarPuertas() // Recargar roles después de la actualización
+                    cargarPuertas() // Recargar puertas después de la actualización
                 } else {
                     _mensajeEstado.postValue("Error al actualizar puerta")
                 }
@@ -67,7 +68,7 @@ class PuertaViewModel : ViewModel() {
             try {
                 val response = repository.eliminarPuerta(id)
                 if (response.isSuccessful) {
-                    cargarPuertas() // Recargar roles después de la eliminación
+                    cargarPuertas() // Recargar puertas después de la eliminación
                 } else {
                     _mensajeEstado.postValue("Error al eliminar puerta")
                 }

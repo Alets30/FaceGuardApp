@@ -5,6 +5,7 @@ import com.example.faceguardapp.roles.models.ApiResponse
 import com.example.faceguardapp.roles.models.Rol
 import com.example.faceguardapp.roles.models.RoleAssignRequest
 import com.example.faceguardapp.usuarios.models.Puerta
+import com.example.faceguardapp.usuarios.models.PuertaRequest
 import retrofit2.Response
 
 class PuertaRepository {
@@ -14,11 +15,11 @@ class PuertaRepository {
         return api.obtenerPuertas()
     }
 
-    suspend fun crearPuerta(puerta: Puerta): Response<Puerta> {
+    suspend fun crearPuerta(puerta: PuertaRequest): Response<PuertaRequest> {
         return api.crearPuerta(puerta)
     }
 
-    suspend fun actualizarPuerta(id: Int, puerta: Puerta): Response<Puerta> {
+    suspend fun actualizarPuerta(id: Int, puerta: PuertaRequest): Response<PuertaRequest> {
         return api.actualizarPuerta(id, puerta)
     }
 

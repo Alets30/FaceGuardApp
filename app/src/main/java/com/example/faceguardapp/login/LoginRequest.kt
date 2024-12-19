@@ -9,7 +9,7 @@ data class LoginResponse(
     val username: String
 )
 //data class ProfileRequest(val token: String)
-data class ProfileResponse(val username: String)
+data class ProfileResponse(val username: String, val is_staff: Boolean)
 
 interface AuthApiService {
     @POST("api/login")

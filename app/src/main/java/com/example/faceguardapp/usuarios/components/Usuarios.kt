@@ -10,6 +10,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -17,11 +18,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.faceguardapp.Constantes
 import com.example.faceguardapp.routes.ScaffoldRoutes
+import com.example.faceguardapp.stores.IsStaffStore
 import com.example.faceguardapp.usuarios.models.Profile
 import com.example.faceguardapp.usuarios.viewmodels.ProfileViewModel
 
@@ -66,6 +69,9 @@ fun UsuariosListScreen(navController: NavController, viewModel: ProfileViewModel
 
 @Composable
 fun UsuarioItem(profile: Profile, navController: NavController, viewModel: ProfileViewModel) {
+    val context = LocalContext.current
+    val isStaffStore = remember { IsStaffStore(context) }
+    val isStaff by isStaffStore.getIsStaff.collectAsState(initial = false)
     var showRoleDialog by remember { mutableStateOf(false) }
     Card(
         modifier = Modifier
@@ -96,7 +102,7 @@ fun UsuarioItem(profile: Profile, navController: NavController, viewModel: Profi
                 Text("Editar")
             }
             Spacer(modifier = Modifier.height(6.dp))
-            //if() {
+            if(isStaff) {
                 // Botón Asignar Rol
                 Button(
                     onClick = { showRoleDialog = true },
@@ -108,7 +114,7 @@ fun UsuarioItem(profile: Profile, navController: NavController, viewModel: Profi
                 ) {
                     Text("Asignar Rol")
                 }
-           // }
+           }
         }
     }
 

@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.faceguardapp.RetrofitClient
 import com.example.faceguardapp.routes.MainRoutes
+import com.example.faceguardapp.stores.IsStaffStore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -44,9 +45,12 @@ fun Body(modifier: Modifier, navigationController: NavController) {
         AuthTokenStore(LocalContext.current).getAuthToken.collectAsState(initial = "").value.toString()
     val scope = rememberCoroutineScope()
 
+    val isStaffStore = IsStaffStore(LocalContext.current)
+    val isStaff = isStaffStore.getIsStaff.collectAsState(initial = false).value
+
     LaunchedEffect(key1 = authToken) {
         if (authToken.isNotEmpty()) {
-            AuthUser(scope, authToken, navigationController)
+            AuthUser(scope, authToken, isStaffStore, navigationController)
         }
     }
 
@@ -74,6 +78,7 @@ fun Body(modifier: Modifier, navigationController: NavController) {
 fun AuthUser(
     scope: CoroutineScope,
     tokenStore: String,
+    isStaffStore: IsStaffStore,
     navigationController: NavController,
 ) {
     RetrofitClient.setToken(tokenStore)
@@ -82,6 +87,8 @@ fun AuthUser(
             if (response.isSuccessful) {
                 response.body()?.let { profileResponse ->
                     scope.launch {
+                        // Ejecutar la función suspend dentro de una coroutine
+                        isStaffStore.saveIsStaff(profileResponse.is_staff)
                         navigationController.navigate(MainRoutes.Home.route)
                     }
                 }
@@ -89,7 +96,7 @@ fun AuthUser(
         }
 
         override fun onFailure(call: Call<ProfileResponse>, t: Throwable) {
-
+            // Manejo de errores si es necesario
         }
     })
 }

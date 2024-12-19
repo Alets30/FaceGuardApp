@@ -10,22 +10,31 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.faceguardapp.Constantes
+import com.example.faceguardapp.areas.models.Area
+import com.example.faceguardapp.areas.viewmodels.AreaViewModel
+import com.example.faceguardapp.stores.IsStaffStore
 import com.example.faceguardapp.usuarios.models.Puerta
+import com.example.faceguardapp.usuarios.models.PuertaRequest
 import com.example.faceguardapp.usuarios.viewmodels.ProfileViewModel
 import com.example.faceguardapp.usuarios.viewmodels.PuertaViewModel
 
 @Composable
-fun PuertasListScreen(viewModel: PuertaViewModel = viewModel(), profileViewModel: ProfileViewModel = viewModel()) {
+fun PuertasListScreen(
+    viewModel: PuertaViewModel = viewModel(),
+    areaViewModel: AreaViewModel = viewModel()  // Cambio a AreaViewModel
+) {
+    val context = LocalContext.current
+    val isStaffStore = remember { IsStaffStore(context) }
+    val isStaff by isStaffStore.getIsStaff.collectAsState(initial = false)
     val puertas by viewModel.puertas.observeAsState(emptyList())
+    val areas by areaViewModel.areas.observeAsState(emptyList())  // Cambio de Zonas a Áreas
     val mensajeEstado by viewModel.mensajeEstado.observeAsState()
     var showCreateDialog by remember { mutableStateOf(false) }
     var puertaToDelete by remember { mutableStateOf<Puerta?>(null) }
-
-    //val perfilUsuario by profileViewModel.perfilUsuario.observeAsState()
-    //val esSuperUsuario = perfilUsuario?.usuario?.is_superuser ?: false
 
     Column(
         modifier = Modifier
@@ -35,9 +44,12 @@ fun PuertasListScreen(viewModel: PuertaViewModel = viewModel(), profileViewModel
     ) {
         Text(text = "Puertas", style = MaterialTheme.typography.titleLarge)
         Spacer(modifier = Modifier.height(16.dp))
-       // if(esSuperUsuario) {
+        if(isStaff) {
             Button(
-                onClick = { showCreateDialog = true },
+                onClick = {
+                    showCreateDialog = true
+                    println("Botón Crear Puerta presionado")
+                },
                 modifier = Modifier.align(Alignment.Start),
                 colors = ButtonDefaults.buttonColors(
                     disabledContainerColor = Color.Gray,
@@ -48,15 +60,15 @@ fun PuertasListScreen(viewModel: PuertaViewModel = viewModel(), profileViewModel
                 Text("Crear Puerta")
             }
             Spacer(modifier = Modifier.height(16.dp))
-        //}
-
+        }
         if (puertas.isEmpty()) {
             Text(text = "No se encontraron puertas.")
         } else {
-            //if(esSuperUsuario) {
+            if(isStaff) {
                 LazyColumn(modifier = Modifier.fillMaxSize()) {
                     items(puertas) { puerta ->
                         PuertaItem(
+                            listaAreas = areas,  // Cambio de zonas a áreas
                             puerta = puerta,
                             onActualizarClick = { puertaActualizada ->
                                 viewModel.actualizarPuerta(puerta.id, puertaActualizada)
@@ -67,15 +79,16 @@ fun PuertasListScreen(viewModel: PuertaViewModel = viewModel(), profileViewModel
                         )
                     }
                 }
-            /*}
-            else{
+            }
+            else
+            {
                 LazyColumn(modifier = Modifier.fillMaxSize()) {
                     items(puertas) { puerta ->
                         // Solo muestra la información, sin los botones de actualizar o eliminar
                         PuertaItemSoloLectura(puerta)
                     }
                 }
-            }*/
+            }
         }
 
         // Mostrar mensaje de estado si existe
@@ -89,10 +102,18 @@ fun PuertasListScreen(viewModel: PuertaViewModel = viewModel(), profileViewModel
 
     // Mostrar el diálogo para crear una nueva puerta
     if (showCreateDialog) {
+        println("Mostrando el diálogo para crear una puerta")
         CreatePuertaDialog(
+            listaAreas = areas,  // Cambio de zonas a áreas
             onDismiss = { showCreateDialog = false },
             onCreate = { nuevaPuerta ->
-                viewModel.crearPuerta(nuevaPuerta)
+                val nuevaPuertaFormateada = PuertaRequest(
+                    nombre = nuevaPuerta.nombre,
+                    descripcion = nuevaPuerta.descripcion,
+                    activo = nuevaPuerta.activo,
+                    areas = nuevaPuerta.areas  // Cambio a areas
+                )
+                viewModel.crearPuerta(nuevaPuertaFormateada)
                 showCreateDialog = false
             }
         )
@@ -105,10 +126,11 @@ fun PuertasListScreen(viewModel: PuertaViewModel = viewModel(), profileViewModel
             title = { Text("Confirmar Eliminación") },
             text = { Text("¿Estás seguro de que deseas eliminar la puerta \"${puerta.nombre}\"?") },
             confirmButton = {
-                Button(onClick = {
-                    viewModel.eliminarPuerta(puerta.id)
-                    puertaToDelete = null
-                },
+                Button(
+                    onClick = {
+                        viewModel.eliminarPuerta(puerta.id)
+                        puertaToDelete = null
+                    },
                     colors = ButtonDefaults.buttonColors(
                         disabledContainerColor = Color.Gray,
                         contentColor = Color(Constantes.WHITE),
@@ -119,7 +141,8 @@ fun PuertasListScreen(viewModel: PuertaViewModel = viewModel(), profileViewModel
                 }
             },
             dismissButton = {
-                Button(onClick = { puertaToDelete = null },
+                Button(
+                    onClick = { puertaToDelete = null },
                     colors = ButtonDefaults.buttonColors(
                         disabledContainerColor = Color.Gray,
                         contentColor = Color(Constantes.WHITE),
@@ -135,16 +158,19 @@ fun PuertasListScreen(viewModel: PuertaViewModel = viewModel(), profileViewModel
     // Cargar puertas si aún no están cargadas
     LaunchedEffect(Unit) {
         viewModel.cargarPuertas()
+        areaViewModel.cargarAreas()  // Cambio a cargar áreas
     }
 }
 
 @Composable
 fun CreatePuertaDialog(
+    listaAreas: List<Area>,  // Cambio de zonas a áreas
     onDismiss: () -> Unit,
-    onCreate: (Puerta) -> Unit
+    onCreate: (PuertaRequest) -> Unit
 ) {
     var nombre by remember { mutableStateOf("") }
     var descripcion by remember { mutableStateOf("") }
+    var areas by remember { mutableStateOf<List<Area>>(emptyList()) }  // Cambio a áreas
     var activo by remember { mutableStateOf(false) }
 
     AlertDialog(
@@ -176,16 +202,23 @@ fun CreatePuertaDialog(
                         onCheckedChange = { activo = it }
                     )
                 }
+                AreaDropdown(
+                    areas = listaAreas,  // Cambio de zonas a áreas
+                    selectedArea = areas.firstOrNull(),
+                    onAreaSelected = { selectedArea ->
+                        areas = listOf(selectedArea)
+                    }
+                )
             }
         },
         confirmButton = {
             Button(
                 onClick = {
-                    val nuevaPuerta = Puerta(
-                        id = 0, // El ID será asignado por el backend
+                    val nuevaPuerta = PuertaRequest(
                         nombre = nombre,
                         descripcion = descripcion,
-                        activo = activo
+                        activo = activo,
+                        areas = areas.map { it.id }  // Cambio a áreas
                     )
                     onCreate(nuevaPuerta)
                 },
@@ -200,12 +233,14 @@ fun CreatePuertaDialog(
             }
         },
         dismissButton = {
-            Button(onClick = onDismiss,
+            Button(
+                onClick = onDismiss,
                 colors = ButtonDefaults.buttonColors(
                     disabledContainerColor = Color.Gray,
                     contentColor = Color(Constantes.WHITE),
                     containerColor = Color.Black
-                )) {
+                )
+            ) {
                 Text("Cancelar")
             }
         }
@@ -213,18 +248,76 @@ fun CreatePuertaDialog(
 }
 
 @Composable
+fun AreaDropdown(
+    areas: List<Area>,  // Lista de áreas
+    selectedArea: Area?, // Área seleccionada
+    onAreaSelected: (Area) -> Unit  // Callback para seleccionar el área
+) {
+    var expanded by remember { mutableStateOf(false) } // Controla si el dropdown está expandido o no
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+    ) {
+        // Botón que muestra el área seleccionada o un texto por defecto
+        OutlinedButton(
+            onClick = { expanded = true },
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color.White,
+                contentColor = Color.Black,
+            ),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(
+                text = selectedArea?.nombre ?: "Seleccione un área",
+                modifier = Modifier.padding(8.dp)
+            )
+        }
+
+        // DropdownMenu con las opciones de áreas
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }, // Cierra el menú cuando se hace clic fuera
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color.White)
+        ) {
+            areas.forEach { area ->
+                DropdownMenuItem(
+                    onClick = {
+                        onAreaSelected(area) // Notifica la selección al callback
+                        expanded = false // Cierra el menú
+                    },
+                    text = {
+                        Text(
+                            text = area.nombre,
+                            color = Color.Black,
+                            modifier = Modifier.padding(8.dp)
+                        )
+                    }
+                )
+            }
+        }
+    }
+}
+
+@Composable
 fun PuertaItem(
+    listaAreas: List<Area>,  // Lista de áreas
     puerta: Puerta,
-    onActualizarClick: (Puerta) -> Unit,
+    onActualizarClick: (PuertaRequest) -> Unit,
     onEliminarClick: () -> Unit
 ) {
     var nombre by remember { mutableStateOf(puerta.nombre) }
     var descripcion by remember { mutableStateOf(puerta.descripcion) }
     var activo by remember { mutableStateOf(puerta.activo) }
+    var areas by remember { mutableStateOf(puerta.areas) }  // Cambio de zonas a áreas
 
     // Determinar si el botón debe estar habilitado
-    val isModified = remember(puerta, nombre, descripcion, activo) {
+    val isModified = remember(puerta, nombre, descripcion, activo, areas) {
         nombre != puerta.nombre || descripcion != puerta.descripcion || activo != puerta.activo
+                || areas != puerta.areas
     }
 
     Card(
@@ -279,25 +372,37 @@ fun PuertaItem(
                     )
                 )
             }
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(text = "Área asignada:")
+            AreaDropdown(  // Dropdown para seleccionar área
+                areas = listaAreas,
+                selectedArea = areas.firstOrNull(),
+                onAreaSelected = { selectedArea ->
+                    areas = listOf(selectedArea)
+                }
+            )
             Spacer(modifier = Modifier.height(16.dp))
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Button(onClick = onEliminarClick,
+                Button(
+                    onClick = onEliminarClick,
                     colors = ButtonDefaults.buttonColors(
                         disabledContainerColor = Color.Gray,
                         contentColor = Color(Constantes.WHITE),
                         containerColor = Color.Red
-                    )) {
+                    )
+                ) {
                     Text("Eliminar")
                 }
                 Button(
                     onClick = {
-                        val puertaActualizada = puerta.copy(
+                        val puertaActualizada = PuertaRequest(
                             nombre = nombre,
                             descripcion = descripcion,
-                            activo = activo
+                            activo = activo,
+                            areas = areas.map { it.id }  // Cambio a áreas
                         )
                         onActualizarClick(puertaActualizada)
                     },
@@ -346,3 +451,5 @@ fun PuertaItemSoloLectura(puerta: Puerta) {
         }
     }
 }
+
+
