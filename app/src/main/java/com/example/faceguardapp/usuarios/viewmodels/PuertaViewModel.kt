@@ -88,7 +88,7 @@ class PuertaViewModel : ViewModel() {
                 if (response.isSuccessful) {
                     response.body()?.let {
                         _accesoVerificado.postValue(it.acceso)
-                        _mensajeEstado.postValue("Acceso ${if (it.acceso == true) "concedido" else "denegado"}")
+                        //_mensajeEstado.postValue("Acceso ${if (it.acceso == true) "concedido" else "denegado"}")
                     }
                 } else {
                     _mensajeEstado.postValue("Error al verificar rostro")
