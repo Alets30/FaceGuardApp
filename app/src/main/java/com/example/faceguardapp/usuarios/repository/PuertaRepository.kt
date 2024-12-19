@@ -6,6 +6,8 @@ import com.example.faceguardapp.roles.models.Rol
 import com.example.faceguardapp.roles.models.RoleAssignRequest
 import com.example.faceguardapp.usuarios.models.Puerta
 import com.example.faceguardapp.usuarios.models.PuertaRequest
+import com.example.faceguardapp.usuarios.models.VerificarRostroRequest
+import com.example.faceguardapp.usuarios.models.VerificarRostroResponse
 import retrofit2.Response
 
 class PuertaRepository {
@@ -25,6 +27,11 @@ class PuertaRepository {
 
     suspend fun eliminarPuerta(id: Int): Response<Void> {
         return api.eliminarPuerta(id)
+    }
+
+    suspend fun verificarRostroAcceso(puertaId: Int, username: String, photoBase64: String): Response<VerificarRostroResponse> {
+        val request = VerificarRostroRequest(username, photoBase64)
+        return api.verificarRostroAcceso(puertaId, request)
     }
 
     /*

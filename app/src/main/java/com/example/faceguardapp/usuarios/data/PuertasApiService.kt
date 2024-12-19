@@ -5,6 +5,8 @@ import com.example.faceguardapp.roles.models.Rol
 import com.example.faceguardapp.roles.models.RoleAssignRequest
 import com.example.faceguardapp.usuarios.models.Puerta
 import com.example.faceguardapp.usuarios.models.PuertaRequest
+import com.example.faceguardapp.usuarios.models.VerificarRostroRequest
+import com.example.faceguardapp.usuarios.models.VerificarRostroResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.*
@@ -21,4 +23,10 @@ interface PuertasApiService {
 
     @DELETE("api/puertas/delete/{id}")
     suspend fun eliminarPuerta(@Path("id") id: Int): Response<Void>  // Eliminar puerta
+
+    @POST("api/puertas/{puertaId}/verificar/")
+    suspend fun verificarRostroAcceso(
+        @Path("puertaId") puertaId: Int, // ID de la puerta
+        @Body request: VerificarRostroRequest // Cuerpo de la solicitud
+    ): Response<VerificarRostroResponse>
 }

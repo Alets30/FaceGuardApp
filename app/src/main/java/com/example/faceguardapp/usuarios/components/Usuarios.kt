@@ -1,5 +1,6 @@
 package com.example.faceguardapp.usuarios.components
 
+import UsernameStore
 import androidx.compose.foundation.clickable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue

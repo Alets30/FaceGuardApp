@@ -1,5 +1,8 @@
 package com.example.faceguardapp.usuarios.components
 
+import UsernameStore
+import android.graphics.Bitmap
+import android.util.Base64
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -19,13 +22,53 @@ import com.example.faceguardapp.areas.viewmodels.AreaViewModel
 import com.example.faceguardapp.stores.IsStaffStore
 import com.example.faceguardapp.usuarios.models.Puerta
 import com.example.faceguardapp.usuarios.models.PuertaRequest
-import com.example.faceguardapp.usuarios.viewmodels.ProfileViewModel
 import com.example.faceguardapp.usuarios.viewmodels.PuertaViewModel
+import java.io.ByteArrayOutputStream
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.launch
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CameraAlt
+import androidx.compose.material.icons.filled.PersonSearch
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import com.example.faceguardapp.RetrofitClient
+import com.example.faceguardapp.routes.ScaffoldRoutes
+import com.example.faceguardapp.usuarios.models.VerificarRostroRequest
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Composable
 fun PuertasListScreen(
     viewModel: PuertaViewModel = viewModel(),
-    areaViewModel: AreaViewModel = viewModel()  // Cambio a AreaViewModel
+    areaViewModel: AreaViewModel = viewModel(),
+    navController: NavController
 ) {
     val context = LocalContext.current
     val isStaffStore = remember { IsStaffStore(context) }
@@ -35,6 +78,8 @@ fun PuertasListScreen(
     val mensajeEstado by viewModel.mensajeEstado.observeAsState()
     var showCreateDialog by remember { mutableStateOf(false) }
     var puertaToDelete by remember { mutableStateOf<Puerta?>(null) }
+    val usernameStore = remember { UsernameStore(context) }
+    val username by usernameStore.getUsername.collectAsState(initial = "")
 
     Column(
         modifier = Modifier
@@ -85,7 +130,7 @@ fun PuertasListScreen(
                 LazyColumn(modifier = Modifier.fillMaxSize()) {
                     items(puertas) { puerta ->
                         // Solo muestra la información, sin los botones de actualizar o eliminar
-                        PuertaItemSoloLectura(puerta)
+                        PuertaItemSoloLectura(puerta, username.toString(), navController)
                     }
                 }
             }
@@ -421,7 +466,9 @@ fun PuertaItem(
 }
 
 @Composable
-fun PuertaItemSoloLectura(puerta: Puerta) {
+fun PuertaItemSoloLectura(puerta: Puerta, username: String, navController: NavController) {
+    var puertaId:Int = puerta.id
+    val username:String = username
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -432,24 +479,34 @@ fun PuertaItemSoloLectura(puerta: Puerta) {
         )
     )
     {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = "Nombre: ${puerta.nombre}", style = MaterialTheme.typography.bodyLarge)
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = if (puerta.descripcion.isBlank()) {
-                    "Sin descripción"
-                } else {
-                    "Descripción: ${puerta.descripcion}"
-                },
-                style = MaterialTheme.typography.bodyMedium
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = "Estado: ${if (puerta.activo) "Activo" else "Inactivo"}",
-                style = MaterialTheme.typography.bodyMedium
-            )
+        Row (horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,){
+            Column(modifier = Modifier.padding(16.dp).padding(end = 110.dp)) {
+                Text(text = "Nombre: ${puerta.nombre}", style = MaterialTheme.typography.bodyLarge)
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = if (puerta.descripcion.isBlank()) {
+                        "Sin descripción"
+                    } else {
+                        "Descripción: ${puerta.descripcion}"
+                    },
+                    style = MaterialTheme.typography.bodyMedium
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "Estado: ${if (puerta.activo) "Activo" else "Inactivo"}",
+                    style = MaterialTheme.typography.bodyMedium
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(text = "Clave: ${puerta.id}", style = MaterialTheme.typography.bodyLarge)
+            }
+            Button(onClick = {},
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(Constantes.TERTIARY_BLUE)
+                )
+            ) {
+                Text("Acceso")
+            }
         }
     }
 }
-
-

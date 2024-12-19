@@ -138,7 +138,7 @@ fun HomeScreen(navigationController: NavController) {
                             MovimientoScreen()
                         }
                         composable(ScaffoldRoutes.Puertas.route){
-                            PuertasListScreen()
+                            PuertasListScreen(navController = navigationController)
                         }
                     }
                 }

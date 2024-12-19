@@ -18,6 +18,9 @@ class PuertaViewModel : ViewModel() {
     private val _mensajeEstado = MutableLiveData<String>()
     val mensajeEstado: LiveData<String> get() = _mensajeEstado
 
+    private val _accesoVerificado = MutableLiveData<Boolean?>()
+    val accesoVerificado: MutableLiveData<Boolean?> get() = _accesoVerificado
+
     fun cargarPuertas() {
         viewModelScope.launch {
             try {
@@ -71,6 +74,24 @@ class PuertaViewModel : ViewModel() {
                     cargarPuertas() // Recargar puertas después de la eliminación
                 } else {
                     _mensajeEstado.postValue("Error al eliminar puerta")
+                }
+            } catch (e: Exception) {
+                _mensajeEstado.postValue("Error de red: ${e.message}")
+            }
+        }
+    }
+
+    fun verificarRostroAcceso(puertaId: Int, username: String, photoBase64: String) {
+        viewModelScope.launch {
+            try {
+                val response = repository.verificarRostroAcceso(puertaId, username, photoBase64)
+                if (response.isSuccessful) {
+                    response.body()?.let {
+                        _accesoVerificado.postValue(it.acceso)
+                        _mensajeEstado.postValue("Acceso ${if (it.acceso == true) "concedido" else "denegado"}")
+                    }
+                } else {
+                    _mensajeEstado.postValue("Error al verificar rostro")
                 }
             } catch (e: Exception) {
                 _mensajeEstado.postValue("Error de red: ${e.message}")

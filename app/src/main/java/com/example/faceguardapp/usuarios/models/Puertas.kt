@@ -16,3 +16,14 @@ data class PuertaRequest (
     val activo: Boolean,
     val areas: List<Int>  // Aquí, áreas es una lista de IDs de las áreas asociadas, como en `AreaRequest`
 )
+
+data class VerificarRostroRequest(
+    val username: String,
+    val photo: String
+)
+
+data class VerificarRostroResponse(
+    val puerta: Int?,
+    val acceso: Boolean?,
+    val detail: String?
+)
