@@ -19,6 +19,7 @@ import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
@@ -39,6 +40,7 @@ import com.example.faceguardapp.notificaciones.components.NotificacionesScreen
 import com.example.faceguardapp.roles.components.RolesListScreen
 import com.example.faceguardapp.routes.MainRoutes
 import com.example.faceguardapp.routes.ScaffoldRoutes
+import com.example.faceguardapp.stores.IsStaffStore
 import com.example.faceguardapp.usuarios.components.EditProfileView
 import com.example.faceguardapp.usuarios.components.PuertasListScreen
 import com.example.faceguardapp.usuarios.components.UsuariosListScreen
@@ -57,18 +59,23 @@ fun HomeScreen(navigationController: NavController) {
     var logoutDialog by rememberSaveable { mutableStateOf(false) }
     val scaffoldNavigationController = rememberNavController()
 
+    val isStaffStore = IsStaffStore(context)
+    val isStaff by isStaffStore.getIsStaff.collectAsState(initial = false)
+
     ModalNavigationDrawer(
         //gesturesEnabled = false,
         drawerContent = {
             ModalDrawerSheet {
-                MyModalDrawer(navigationController = scaffoldNavigationController, onCloseDrawer = {
+                MyModalDrawer(
+                    navigationController = scaffoldNavigationController, onCloseDrawer = {
                     scope.launch {
                         drawerState.close()
                     }
                 },
                     showLogoutDialog = {
                         logoutDialog = it
-                    })
+                    }, isStaff = isStaff
+                )
 
             }
         },
