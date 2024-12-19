@@ -34,7 +34,7 @@ import com.example.faceguardapp.notificaciones.models.Notificacion
 import com.example.faceguardapp.notificaciones.viewmodels.NotificacionViewModel
 
 @Composable
-fun NotificacionesScreen(descontarBadge: () -> Unit) {
+fun NotificacionesScreen() {
     val viewModel: NotificacionViewModel = viewModel()
     val notificaciones by viewModel.notificaciones.observeAsState(emptyList())
     val mensajeEstado by viewModel.mensajeEstado.observeAsState("")
@@ -56,7 +56,6 @@ fun NotificacionesScreen(descontarBadge: () -> Unit) {
                 notificacion = notificacion,
                 onMarcarComoLeida = {
                     viewModel.marcarComoLeida(notificacion.id)
-                    descontarBadge()
                 }
             )
         }

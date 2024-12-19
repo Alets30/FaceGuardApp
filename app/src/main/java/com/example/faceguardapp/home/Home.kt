@@ -23,6 +23,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -65,7 +66,7 @@ fun HomeScreen(navigationController: NavController) {
 
     val viewModel: NotificacionViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
     val notificaciones by viewModel.notificaciones.observeAsState(emptyList())
-    val notificacionesPendientes = notificaciones.count { !it.leida }
+    val notificacionesPendientes by rememberSaveable { mutableIntStateOf(notificaciones.count { !it.leida }) }
 
     val isStaffStore = IsStaffStore(context)
     val isStaff by isStaffStore.getIsStaff.collectAsState(initial = false)
@@ -128,10 +129,7 @@ fun HomeScreen(navigationController: NavController) {
                             ReconocimientoScreen()
                         }
                         composable(ScaffoldRoutes.Notificaciones.route) {
-                            NotificacionesScreen(descontarBadge = {
-
-                            })
-
+                            NotificacionesScreen()
                         }
                         composable(ScaffoldRoutes.Roles.route) {
                             RolesListScreen()
