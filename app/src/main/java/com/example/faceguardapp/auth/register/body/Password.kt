@@ -1,4 +1,4 @@
-package com.example.faceguardapp.login.body
+package com.example.faceguardapp.auth.register.body
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape

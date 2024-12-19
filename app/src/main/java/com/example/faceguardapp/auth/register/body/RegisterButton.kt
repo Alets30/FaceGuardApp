@@ -1,8 +1,10 @@
-package com.example.faceguardapp.login.body
+package com.example.faceguardapp.auth.register.body
 
 import AuthTokenStore
 import LoginRequest
 import LoginResponse
+import RegisterRequest
+import RegisterResponse
 import UsernameStore
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -19,15 +21,17 @@ import com.example.faceguardapp.routes.MainRoutes
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 @Composable
-fun LoginButton(
+fun RegisterButton(
     loginEnable: Boolean,
     username: String,
     password: String,
+    photo: String,
     errorMessage: (String) -> Unit,
     navigationController: NavController
 ) {
@@ -37,48 +41,55 @@ fun LoginButton(
     val usernameStore = UsernameStore(context)
     Button(
         onClick = {
-            performLogin(username, password, { error ->
+            errorMessage("")
+            performRegister(username, password, photo, { error ->
                 errorMessage(error)
             }, scope, tokenStore, usernameStore, navigationController)
         }, enabled = loginEnable, modifier = Modifier
             .fillMaxWidth()
             .height(48.dp)
     ) {
-        Text(text = "Log In")
+        Text(text = "Register")
     }
 }
 
-fun performLogin(
+fun performRegister(
     username: String,
     password: String,
+    photo: String,
     onError: (String) -> Unit,
     scope: CoroutineScope,
     tokenStore: AuthTokenStore,
     usernameStore: UsernameStore,
     navigationController: NavController
 ) {
-    val request = LoginRequest(username, password)
+    val request = RegisterRequest(username, password, "data:image/png;base64,$photo")
 
-    CoroutineScope(Dispatchers.IO).launch {
-        RetrofitClient.api.login(request).enqueue(object : Callback<LoginResponse> {
-            override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
+    scope.launch {
+        try {
+            // Realiza la solicitud en un hilo de IO
+            withContext(Dispatchers.IO) {
+                val response = RetrofitClient.api.register(request)
+                    .execute() // Cambiar a `execute()` para manejarlo sin callbacks
                 if (response.isSuccessful) {
-                    response.body()?.let {
-                        scope.launch {
-                            tokenStore.saveAuthToken(it.token)
-                            usernameStore.saveUsername(it.username)
-                        }
-                        navigationController.navigate(MainRoutes.Home.route)
-                        navigationController.popBackStack()
-                    } ?: onError("Error: Respuesta vacía")
+                    response.body()?.let { body ->
+                        // Guarda el token y el username en el almacenamiento
+                        tokenStore.saveAuthToken(body.token)
+                        usernameStore.saveUsername(body.username)
+                    } ?: throw Exception("Respuesta vacía")
                 } else {
-                    onError("Error: ${response.message()}")
+                    throw Exception(response.errorBody()?.string() ?: "Error desconocido")
                 }
             }
 
-            override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
-                onError("Error: ${t.message}")
+            // Navega a la pantalla principal en el hilo principal
+            withContext(Dispatchers.Main) {
+                navigationController.navigate(MainRoutes.Home.route) {
+                    popUpTo(MainRoutes.Register.route) { inclusive = true }
+                }
             }
-        })
+        } catch (e: Exception) {
+            onError("Error: ${e.message}")
+        }
     }
 }

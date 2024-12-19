@@ -1,4 +1,4 @@
-package com.example.faceguardapp.login.body
+package com.example.faceguardapp.auth.login.body
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Text

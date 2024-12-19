@@ -1,4 +1,4 @@
-package com.example.faceguardapp.login
+package com.example.faceguardapp.auth
 
 import okhttp3.Interceptor
 import okhttp3.Response
