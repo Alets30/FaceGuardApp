@@ -42,7 +42,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.faceguardapp.Constantes
-import com.example.faceguardapp.routes.MainRoutes
 import com.example.faceguardapp.routes.ScaffoldRoutes
 import com.example.faceguardapp.stores.StoreDarkMode
 import kotlinx.coroutines.launch
@@ -51,12 +50,14 @@ import kotlinx.coroutines.launch
 fun MyModalDrawer(
     navigationController: NavController,
     onCloseDrawer: () -> Unit,
-    showLogoutDialog: (Boolean) -> Unit
+    showLogoutDialog: (Boolean) -> Unit,
+    isStaff: Boolean
 ) {
     val context = LocalContext.current
     val darkModeStore = StoreDarkMode(context)
     val darkMode = darkModeStore.getDarkMode.collectAsState(initial = false)
     val scope = rememberCoroutineScope()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -82,7 +83,9 @@ fun MyModalDrawer(
                 .fillMaxWidth(),
             textAlign = TextAlign.Center
         )
+
         HorizontalDivider(thickness = 1.dp)
+
         Text(
             text = "ACCESO RÁPIDO",
             fontSize = 20.sp,
@@ -90,186 +93,262 @@ fun MyModalDrawer(
             color = Color.White,
             modifier = Modifier.padding(8.dp),
         )
-        TextButton(onClick = { onCloseDrawer() }) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Home,
-                    contentDescription = "Dashboard",
-                    tint = Color.White
-                )
-                Text(
-                    text = "Dashboard",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp),
-                    color = Color.White,
-                    fontSize = 22.sp,
-                    fontWeight = FontWeight.Normal
-                )
+
+        if (isStaff) {
+            TextButton(onClick = { onCloseDrawer() }) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Home,
+                        contentDescription = "Dashboard",
+                        tint = Color.White
+                    )
+                    Text(
+                        text = "Dashboard",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp),
+                        color = Color.White,
+                        fontSize = 22.sp,
+                        fontWeight = FontWeight.Normal
+                    )
+                }
             }
-        }
-        TextButton(onClick = {
-            navigationController.navigate(ScaffoldRoutes.Usuarios.route)
-            onCloseDrawer()
-        }) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Person,
-                    contentDescription = "Usuarios",
-                    tint = Color.White
-                )
-                Text(
-                    text = "Usuarios",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp),
-                    color = Color.White,
-                    fontSize = 22.sp,
-                    fontWeight = FontWeight.Normal
-                )
+
+
+            TextButton(onClick = {
+                navigationController.navigate(ScaffoldRoutes.Usuarios.route)
+                onCloseDrawer()
+            }) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Person,
+                        contentDescription = "Usuarios",
+                        tint = Color.White
+                    )
+                    Text(
+                        text = "Usuarios",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp),
+                        color = Color.White,
+                        fontSize = 22.sp,
+                        fontWeight = FontWeight.Normal
+                    )
+                }
             }
-        }
-        TextButton(onClick = {
-            navigationController.navigate(ScaffoldRoutes.Roles.route)
-            onCloseDrawer()
-        }) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Icon(
-                    imageVector = Icons.Default.LockPerson,
-                    contentDescription = "Roles",
-                    tint = Color.White
-                )
-                Text(
-                    text = "Roles",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp),
-                    color = Color.White,
-                    fontSize = 22.sp,
-                    fontWeight = FontWeight.Normal
-                )
+
+
+            TextButton(onClick = {
+                navigationController.navigate(ScaffoldRoutes.Roles.route)
+                onCloseDrawer()
+            }) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.LockPerson,
+                        contentDescription = "Roles",
+                        tint = Color.White
+                    )
+                    Text(
+                        text = "Roles",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp),
+                        color = Color.White,
+                        fontSize = 22.sp,
+                        fontWeight = FontWeight.Normal
+                    )
+                }
             }
-        }
-        TextButton(onClick = { onCloseDrawer() }) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Icon(
-                    imageVector = Icons.Default.DoorBack,
-                    contentDescription = "Puertas",
-                    tint = Color.White
-                )
-                Text(
-                    text = "Puertas",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp),
-                    color = Color.White,
-                    fontSize = 22.sp,
-                    fontWeight = FontWeight.Normal
-                )
+
+
+            TextButton(onClick = {
+                navigationController.navigate(ScaffoldRoutes.Puertas.route)
+                onCloseDrawer()
+            }) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.DoorBack,
+                        contentDescription = "Puertas",
+                        tint = Color.White
+                    )
+                    Text(
+                        text = "Puertas",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp),
+                        color = Color.White,
+                        fontSize = 22.sp,
+                        fontWeight = FontWeight.Normal
+                    )
+                }
             }
-        }
-        TextButton(onClick = {
-            navigationController.navigate(route = ScaffoldRoutes.Areas.route)
-            onCloseDrawer()
-        }) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Icon(
-                    imageVector = Icons.Default.AddLocation,
-                    contentDescription = "Areas",
-                    tint = Color.White
-                )
-                Text(
-                    text = "Areas",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp),
-                    color = Color.White,
-                    fontSize = 22.sp,
-                    fontWeight = FontWeight.Normal
-                )
+
+
+            TextButton(onClick = {
+                navigationController.navigate(route = ScaffoldRoutes.Areas.route)
+                onCloseDrawer()
+            }) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.AddLocation,
+                        contentDescription = "Areas",
+                        tint = Color.White
+                    )
+                    Text(
+                        text = "Areas",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp),
+                        color = Color.White,
+                        fontSize = 22.sp,
+                        fontWeight = FontWeight.Normal
+                    )
+                }
             }
-        }
-        TextButton(onClick = {
-            navigationController.navigate(ScaffoldRoutes.Zonas.route)
-            onCloseDrawer()
-        }) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Icon(
-                    imageVector = Icons.Default.LocationCity,
-                    contentDescription = "Zonas",
-                    tint = Color.White
-                )
-                Text(
-                    text = "Zonas",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp),
-                    color = Color.White,
-                    fontSize = 22.sp,
-                    fontWeight = FontWeight.Normal
-                )
+
+
+            TextButton(onClick = {
+                navigationController.navigate(ScaffoldRoutes.Zonas.route)
+                onCloseDrawer()
+            }) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.LocationCity,
+                        contentDescription = "Zonas",
+                        tint = Color.White
+                    )
+                    Text(
+                        text = "Zonas",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp),
+                        color = Color.White,
+                        fontSize = 22.sp,
+                        fontWeight = FontWeight.Normal
+                    )
+                }
             }
+
+
+            TextButton(onClick = {
+                navigationController.navigate(ScaffoldRoutes.Movimientos.route)
+                onCloseDrawer()
+            }) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Repeat,
+                        contentDescription = "Movimientos",
+                        tint = Color.White
+                    )
+                    Text(
+                        text = "Movimientos",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp),
+                        color = Color.White,
+                        fontSize = 22.sp,
+                        fontWeight = FontWeight.Normal
+                    )
+                }
+            }
+
+
+            TextButton(onClick = {
+                navigationController.navigate(ScaffoldRoutes.Reconocimiento.route)
+                onCloseDrawer()
+            }) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.PersonSearch,
+                        contentDescription = "Reconocimiento",
+                        tint = Color.White
+                    )
+                    Text(
+                        text = "Reconocimiento",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp),
+                        color = Color.White,
+                        fontSize = 22.sp,
+                        fontWeight = FontWeight.Normal
+                    )
+                }
+            }
+
+
+        } else {
+
+            TextButton(onClick = {
+                navigationController.navigate(ScaffoldRoutes.Usuarios.route)
+                onCloseDrawer()
+            }) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Person,
+                        contentDescription = "Usuarios",
+                        tint = Color.White
+                    )
+                    Text(
+                        text = "Usuarios",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp),
+                        color = Color.White,
+                        fontSize = 22.sp,
+                        fontWeight = FontWeight.Normal
+                    )
+                }
+            }
+
+
+            TextButton(onClick = {
+                navigationController.navigate(ScaffoldRoutes.Puertas.route)
+                onCloseDrawer()
+            }) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.DoorBack,
+                        contentDescription = "Puertas",
+                        tint = Color.White
+                    )
+                    Text(
+                        text = "Puertas",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp),
+                        color = Color.White,
+                        fontSize = 22.sp,
+                        fontWeight = FontWeight.Normal
+                    )
+                }
+            }
+
+
         }
 
-        TextButton(onClick = {
-            navigationController.navigate(ScaffoldRoutes.Movimientos.route)
-            onCloseDrawer()
-        }) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Repeat,
-                    contentDescription = "Movimientos",
-                    tint = Color.White
-                )
-                Text(
-                    text = "Movimientos",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp),
-                    color = Color.White,
-                    fontSize = 22.sp,
-                    fontWeight = FontWeight.Normal
-                )
-            }
-        }
-        TextButton(onClick = {
-            navigationController.navigate(ScaffoldRoutes.Reconocimiento.route)
-            onCloseDrawer()
-        }) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.PersonSearch,
-                    contentDescription = "Reconocimiento",
-                    tint = Color.White
-                )
-                Text(
-                    text = "Reconocimiento",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp),
-                    color = Color.White,
-                    fontSize = 22.sp,
-                    fontWeight = FontWeight.Normal
-                )
-            }
-        }
         HorizontalDivider(thickness = 1.dp)
+
+
         Text(
             text = "CUENTA",
             fontSize = 20.sp,
@@ -277,29 +356,33 @@ fun MyModalDrawer(
             color = Color.White,
             modifier = Modifier.padding(8.dp),
         )
-        TextButton(onClick = {
-            navigationController.navigate(ScaffoldRoutes.Notificaciones.route)
-            onCloseDrawer()
-        }) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Notifications,
-                    contentDescription = "Notificaciones",
-                    tint = Color.White
-                )
-                Text(
-                    text = "Notificaciones",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp),
-                    color = Color.White,
-                    fontSize = 22.sp,
-                    fontWeight = FontWeight.Normal
-                )
+
+        if (isStaff){
+            TextButton(onClick = {
+                navigationController.navigate(ScaffoldRoutes.Notificaciones.route)
+                onCloseDrawer()
+            }) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Notifications,
+                        contentDescription = "Notificaciones",
+                        tint = Color.White
+                    )
+                    Text(
+                        text = "Notificaciones",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp),
+                        color = Color.White,
+                        fontSize = 22.sp,
+                        fontWeight = FontWeight.Normal
+                    )
+                }
             }
         }
+
 //        TextButton(onClick = { onCloseDrawer() }) {
 //            Row(
 //                verticalAlignment = Alignment.CenterVertically,
@@ -340,6 +423,8 @@ fun MyModalDrawer(
                 )
             }
         }
+
+
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,

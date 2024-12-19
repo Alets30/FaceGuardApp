@@ -8,6 +8,7 @@ import com.example.faceguardapp.areas.data.AreaApiService
 import com.example.faceguardapp.roles.data.RolApiService
 import com.example.faceguardapp.zonas.data.ZonaApiService
 import com.example.faceguardapp.usuarios.data.ProfileApiService
+import com.example.faceguardapp.usuarios.data.PuertasApiService
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -102,6 +103,15 @@ object RetrofitClient {
             .client(okHttpClient)
             .build()
             .create(MovimientoApiService::class.java)
+    }
+
+    val apiPuertas: PuertasApiService by lazy {
+        Retrofit.Builder()
+            .baseUrl(Constantes.BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(okHttpClient)
+            .build()
+            .create(PuertasApiService::class.java)
     }
 
 

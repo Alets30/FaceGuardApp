@@ -10,6 +10,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -17,11 +18,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.faceguardapp.Constantes
 import com.example.faceguardapp.routes.ScaffoldRoutes
+import com.example.faceguardapp.stores.IsStaffStore
 import com.example.faceguardapp.usuarios.models.Profile
 import com.example.faceguardapp.usuarios.viewmodels.ProfileViewModel
 
@@ -29,6 +32,7 @@ import com.example.faceguardapp.usuarios.viewmodels.ProfileViewModel
 fun UsuariosListScreen(navController: NavController, viewModel: ProfileViewModel = viewModel()) {
     val usuarios by viewModel.usuarios.observeAsState(emptyList())
     val mensajeEstado by viewModel.mensajeEstado.observeAsState()
+
 
     Column(
         modifier = Modifier
@@ -65,8 +69,10 @@ fun UsuariosListScreen(navController: NavController, viewModel: ProfileViewModel
 
 @Composable
 fun UsuarioItem(profile: Profile, navController: NavController, viewModel: ProfileViewModel) {
+    val context = LocalContext.current
+    val isStaffStore = remember { IsStaffStore(context) }
+    val isStaff by isStaffStore.getIsStaff.collectAsState(initial = false)
     var showRoleDialog by remember { mutableStateOf(false) }
-
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -76,9 +82,11 @@ fun UsuarioItem(profile: Profile, navController: NavController, viewModel: Profi
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(text = "Clave: ${profile.user_id}", style = MaterialTheme.typography.titleMedium)
+            Spacer(modifier = Modifier.height(4.dp))
             Text(text = "Nombre: ${profile.nombre} ${profile.apellido_p} ${profile.apellido_m}")
+            Spacer(modifier = Modifier.height(4.dp))
             Text(text = "Teléfono: ${profile.telefono}")
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
             // Botón Editar
             Button(
@@ -93,19 +101,20 @@ fun UsuarioItem(profile: Profile, navController: NavController, viewModel: Profi
             ) {
                 Text("Editar")
             }
-
-            // Botón Asignar Rol
-            Spacer(modifier = Modifier.height(8.dp))
-            Button(
-                onClick = { showRoleDialog = true },
-                colors = ButtonDefaults.buttonColors(
-                    disabledContainerColor = Color.Gray,
-                    contentColor = Color(Constantes.WHITE),
-                    containerColor = Color(Constantes.SECONDARY_BLUE)
-                )
-            ) {
-                Text("Asignar Rol")
-            }
+            Spacer(modifier = Modifier.height(6.dp))
+            if(isStaff) {
+                // Botón Asignar Rol
+                Button(
+                    onClick = { showRoleDialog = true },
+                    colors = ButtonDefaults.buttonColors(
+                        disabledContainerColor = Color.Gray,
+                        contentColor = Color(Constantes.WHITE),
+                        containerColor = Color(Constantes.SECONDARY_BLUE)
+                    )
+                ) {
+                    Text("Asignar Rol")
+                }
+           }
         }
     }
 
@@ -168,8 +177,8 @@ fun AsignarRolDialog(
         confirmButton = {
             Button(
                 onClick = {
-                        viewModel.asignarRol(profile.id, selectedRoleId!!, fechaVencimiento)
-                        onDismiss()
+                    viewModel.asignarRol(profile.id, selectedRoleId!!, fechaVencimiento)
+                    onDismiss()
                 },
                 colors = ButtonDefaults.buttonColors(
                     disabledContainerColor = Color.Gray,

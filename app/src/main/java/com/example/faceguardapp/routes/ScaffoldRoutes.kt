@@ -10,5 +10,6 @@ sealed class ScaffoldRoutes(val route: String) {
     object EditProfile : ScaffoldRoutes("EditProfile/{id}") {
         fun createRoute(id: Int) = "EditProfile/$id"
     }
+    object Puertas: ScaffoldRoutes("Puertas")
     object Movimientos: ScaffoldRoutes("Movimientos")
 }

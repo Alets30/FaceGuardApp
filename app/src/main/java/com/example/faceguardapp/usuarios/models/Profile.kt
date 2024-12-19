@@ -12,5 +12,11 @@ data class Profile(
     val direccion: String,
     val estado: String,
     val ciudad: String,
-    val user_id: Int
+    val user_id: Int,
+    val usuario: Usuario
+)
+
+data class Usuario(
+    val is_superuser: Boolean,
+    val is_staff: Boolean
 )
