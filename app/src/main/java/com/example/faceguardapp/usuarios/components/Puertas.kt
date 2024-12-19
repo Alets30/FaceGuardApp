@@ -500,7 +500,7 @@ fun PuertaItemSoloLectura(puerta: Puerta, username: String, navController: NavCo
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(text = "Clave: ${puerta.id}", style = MaterialTheme.typography.bodyLarge)
             }
-            Button(onClick = {},
+            Button(onClick = {navController.navigate(ScaffoldRoutes.ReconocimientoFacial.createRoute(puertaId = puertaId, username = username)) },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color(Constantes.TERTIARY_BLUE)
                 )

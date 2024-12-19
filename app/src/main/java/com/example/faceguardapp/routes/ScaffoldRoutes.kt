@@ -12,4 +12,7 @@ sealed class ScaffoldRoutes(val route: String) {
     }
     object Puertas: ScaffoldRoutes("Puertas")
     object Movimientos: ScaffoldRoutes("Movimientos")
+    object ReconocimientoFacial : ScaffoldRoutes("ReconocimientoFacial/{puertaId}/{username}") {
+        fun createRoute(puertaId: Int, username: String) = "ReconocimientoFacial/$puertaId/$username"
+    }
 }

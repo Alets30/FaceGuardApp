@@ -43,6 +43,7 @@ import com.example.faceguardapp.routes.ScaffoldRoutes
 import com.example.faceguardapp.stores.IsStaffStore
 import com.example.faceguardapp.usuarios.components.EditProfileView
 import com.example.faceguardapp.usuarios.components.PuertasListScreen
+import com.example.faceguardapp.usuarios.components.ReconocimientoFacial
 import com.example.faceguardapp.usuarios.components.UsuariosListScreen
 import com.example.faceguardapp.zonas.components.ZonasListScreen
 import kotlinx.coroutines.launch
@@ -138,7 +139,12 @@ fun HomeScreen(navigationController: NavController) {
                             MovimientoScreen()
                         }
                         composable(ScaffoldRoutes.Puertas.route){
-                            PuertasListScreen(navController = navigationController)
+                            PuertasListScreen(navController = scaffoldNavigationController)
+                        }
+                        composable(ScaffoldRoutes.ReconocimientoFacial.route) { backStackEntry ->
+                            val puertaId = backStackEntry.arguments?.getString("puertaId")?.toInt() ?: return@composable
+                            val username = backStackEntry.arguments?.getString("username") ?: return@composable
+                            ReconocimientoFacial(puertaId = puertaId, username = username, navController = scaffoldNavigationController)
                         }
                     }
                 }
